@@ -24,7 +24,6 @@ export class ContractError extends Error {
 }
 
 const HORIZON_URL = "https://horizon-testnet.stellar.org";
-const RPC_URL = "https://soroban-testnet.stellar.org"; 
 const server = new StellarSdk.Horizon.Server(HORIZON_URL);
 
 // Helper to ensure we have a string address

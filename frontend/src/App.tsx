@@ -46,7 +46,7 @@ interface BlockchainEvent {
 
 function App() {
   // Config States
-  const [contractId, setContractId] = useState<string>("PLACEHOLDER_CONTRACT_ID");
+  const [contractId, setContractId] = useState<string>("CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3");
   const [showSettings, setShowSettings] = useState(false);
   const [isAdminSimulated, setIsAdminSimulated] = useState(false);
 
@@ -925,7 +925,10 @@ function App() {
                       </button>
                     ) : (
                       <button 
-                        onClick={() => setIsVotingOpen(true) || addEvent('info', 'Voting reopened by admin.')} 
+                        onClick={() => {
+                          setIsVotingOpen(true);
+                          addEvent('info', 'Voting reopened by admin.');
+                        }} 
                         className="btn btn-primary" 
                         style={{ width: '100%', fontSize: '0.8rem', padding: '0.6rem' }}
                       >
