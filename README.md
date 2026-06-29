@@ -23,12 +23,17 @@ The platform enables students to submit scholarship applications on-chain, allow
 d:\Scholarship Voting Platform\
 ├── Cargo.toml                      # Workspace configurations
 ├── README.md                       # Documentation (This file)
-├── contract/                       # Soroban Smart Contract
+├── contract/                       # Soroban Smart Contract source
 │   └── scholarship-contract/
 │       ├── Cargo.toml              # Rust dependency manager
+│       ├── Makefile                # Build/test helpers
 │       └── src/
 │           ├── lib.rs              # Smart contract logic
 │           └── test.rs             # Unit tests
+├── contracts/                      # Mirror of the contract layout
+│   └── scholarship-contract/
+│       ├── Cargo.toml
+│       └── src/
 └── frontend/                       # React client
     ├── package.json                # NPM packages
     ├── index.html                  # HTML entry point (Outfit font)
