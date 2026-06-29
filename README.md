@@ -56,6 +56,8 @@ Ensure you have the following installed on your local machine:
 
 ## 🦀 Smart Contract Development
 
+## CONTRACT ADDRESS : CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3
+
 ### 1. Run Unit Tests
 To verify the contract's business logic, compile and run the test suite locally:
 ```bash
