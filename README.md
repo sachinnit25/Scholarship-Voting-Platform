@@ -114,3 +114,20 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 1.  Open the Freighter extension.
 2.  Go to **Settings** -> **Preferences** -> **Network** and set it to **Testnet**.
 3.  Fund your wallet using the Friendbot faucet at [https://laboratory.stellar.org/#account-creator](https://laboratory.stellar.org/#account-creator) to receive 10,000 test XLM.
+
+---
+
+## 🚀 Live Deployment
+
+The application is deployed and ready to use:
+
+**Production URLs:**
+- **Main**: https://frontend-iwkz8ejfu-yodhadigital331-8554s-projects.vercel.app
+- **Alias**: https://frontend-eta-seven-24.vercel.app
+
+**Contract Information:**
+- **Network**: Stellar Testnet
+- **Contract ID**: `CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3`
+- **Status**: Active and ready for transactions
+
+Simply visit one of the URLs above with your Freighter Wallet configured for Testnet to start voting on scholarship applications!
