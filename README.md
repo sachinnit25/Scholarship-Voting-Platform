@@ -119,15 +119,18 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## 🚀 Live Deployment
 
-The application is deployed and ready to use:
+The application is deployed and ready to use on Stellar Testnet.
 
-**Production URLs:**
+**Deployed Testnet URL:**
+- https://frontend-eta-seven-24.vercel.app
+
+**Additional URLs:**
 - **Main**: https://frontend-iwkz8ejfu-yodhadigital331-8554s-projects.vercel.app
 - **Alias**: https://frontend-eta-seven-24.vercel.app
 
 **Contract Information:**
 - **Network**: Stellar Testnet
-- **Contract ID**: `CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3`
+- **Contract ID**: `CBL6SY43NK7VWYJ6J3RYTSJ5GPLYARPRDAGAOEYTKV5P3`
 - **Status**: Active and ready for transactions
 
-Simply visit one of the URLs above with your Freighter Wallet configured for Testnet to start voting on scholarship applications!
+Simply visit the deployed testnet URL above with your Freighter Wallet configured for Testnet to start voting on scholarship applications!
