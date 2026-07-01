@@ -137,4 +137,10 @@ The application is deployed and ready to use on Stellar Testnet.
 - **Contract ID**: `CBL6SY43NK7VWYJ6J3RYTSJ5GPLYARPRDAGAOEYTKV5P3`
 - **Status**: Active and ready for transactions
 
+### CI/CD Pipeline
+This repository includes a GitHub Actions workflow that automatically:
+- runs frontend lint and build checks on every push and pull request
+- runs Soroban contract tests
+- deploys the frontend to Vercel when changes are merged into the main branch and Vercel secrets are configured
+
 Simply visit the deployed testnet URL above with your Freighter Wallet configured for Testnet to start voting on scholarship applications!
