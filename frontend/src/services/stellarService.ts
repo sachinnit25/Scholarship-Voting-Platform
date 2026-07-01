@@ -26,11 +26,18 @@ export class ContractError extends Error {
 const HORIZON_URL = "https://horizon-testnet.stellar.org";
 const server = new StellarSdk.Horizon.Server(HORIZON_URL);
 
+const getErrorMessage = (error: unknown): string => {
+  return error instanceof Error ? error.message : 'An unexpected error occurred.';
+};
+
 // Helper to ensure we have a string address
-const getAddressString = (val: any): string => {
+const getAddressString = (val: unknown): string => {
   if (typeof val === 'string') return val;
-  if (val && val.address) return val.address;
-  if (val && typeof val.toString === 'function') return val.toString();
+  if (val && typeof val === 'object') {
+    const candidate = val as { address?: unknown; toString?: () => string };
+    if (typeof candidate.address === 'string') return candidate.address;
+    if (typeof candidate.toString === 'function') return candidate.toString();
+  }
   return "";
 };
 
@@ -46,9 +53,9 @@ export const connectWallet = async (): Promise<string> => {
     const address = getAddressString(res);
     if (address) return address;
     throw new WalletError("User denied wallet access or no account was found.");
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof WalletError) throw error;
-    throw new WalletError(error.message || "Failed to connect to Freighter wallet.");
+    throw new WalletError(getErrorMessage(error) || "Failed to connect to Freighter wallet.");
   }
 };
 
@@ -60,7 +67,7 @@ export const getXLMBalance = async (publicKey: string): Promise<string> => {
     const address = getAddressString(publicKey);
     if (!address) return "0";
     const account = await server.loadAccount(address);
-    const nativeBalance = account.balances.find((b: any) => b.asset_type === "native");
+    const nativeBalance = account.balances.find((b: { asset_type?: string; balance?: string }) => b.asset_type === "native");
     return nativeBalance ? nativeBalance.balance : "0";
   } catch (error) {
     console.error("Error fetching balance:", error);
@@ -114,15 +121,15 @@ export const invokeContract = async (
       networkPassphrase: StellarSdk.Networks.TESTNET,
     });
 
-    const signedXdr = typeof result === "string" ? result : (result as any).signedTxXdr;
+    const signedXdr = typeof result === "string" ? result : (result as { signedTxXdr?: string }).signedTxXdr;
     if (!signedXdr) throw new TransactionError("Transaction signing failed or was rejected.");
 
     const tx = StellarSdk.TransactionBuilder.fromXDR(signedXdr, StellarSdk.Networks.TESTNET);
     const response = await server.submitTransaction(tx);
     return { hash: response.hash };
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof WalletError || error instanceof TransactionError) throw error;
-    throw new ContractError(error.message || `Failed to invoke ${functionName} on-chain.`);
+    throw new ContractError(getErrorMessage(error) || `Failed to invoke ${functionName} on-chain.`);
   }
 };
 

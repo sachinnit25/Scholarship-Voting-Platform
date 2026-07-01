@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   GraduationCap, 
   Wallet, 
@@ -43,6 +43,10 @@ interface BlockchainEvent {
   type: 'info' | 'success' | 'warning';
   message: string;
 }
+
+const getErrorMessage = (error: unknown): string => {
+  return error instanceof Error ? error.message : 'An unexpected error occurred.';
+};
 
 function App() {
   // Config States
@@ -124,20 +128,13 @@ function App() {
 
   const isSimulation = !contractId || contractId.includes("PLACEHOLDER") || contractId === "";
 
-  // Fetch balance periodically
-  useEffect(() => {
-    if (walletAddress) {
-      fetchBalance();
-    }
-  }, [walletAddress, contractId]);
-
   const fetchBalance = async () => {
     if (!walletAddress) return;
     try {
       const bal = await getXLMBalance(walletAddress);
       setWalletBalance(bal);
-    } catch (e) {
-      console.error("Error updating balance:", e);
+    } catch (error) {
+      console.error("Error updating balance:", error);
     }
   };
 
@@ -150,10 +147,10 @@ function App() {
       const bal = await getXLMBalance(address);
       setWalletBalance(bal);
       addEvent('info', `Freighter Wallet connected: ${address.slice(0, 6)}...${address.slice(-6)}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setTxStatus({
         type: 'error',
-        message: error.message || 'Failed to connect Freighter wallet.'
+        message: getErrorMessage(error) || 'Failed to connect Freighter wallet.'
       });
     } finally {
       setIsConnecting(false);
@@ -187,8 +184,8 @@ function App() {
         hash: res.hash
       });
       addEvent('success', `Admin initialized contract: ${contractId.slice(0, 8)}...`);
-    } catch (e: any) {
-      setTxStatus({ type: 'error', message: e.message || 'Initialization failed.' });
+    } catch (error: unknown) {
+      setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Initialization failed.' });
     }
   };
 
@@ -252,8 +249,8 @@ function App() {
       setFormDescription('');
       setFormAmount('5000');
       fetchBalance();
-    } catch (e: any) {
-      setTxStatus({ type: 'error', message: e.message || 'Application submission failed.' });
+    } catch (error: unknown) {
+      setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Application submission failed.' });
     }
   };
 
@@ -273,8 +270,8 @@ function App() {
       const approvedCandidate = candidates.find(c => c.id === id);
       addEvent('success', `Admin approved applicant: ${approvedCandidate?.name}.`);
       fetchBalance();
-    } catch (e: any) {
-      setTxStatus({ type: 'error', message: e.message || 'Approval transaction failed.' });
+    } catch (error: unknown) {
+      setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Approval transaction failed.' });
     }
   };
 
@@ -308,8 +305,8 @@ function App() {
       const votedCandidate = candidates.find(c => c.id === id);
       addEvent('success', `Voter (${walletAddress.slice(0, 6)}...) cast vote for ${votedCandidate?.name}.`);
       fetchBalance();
-    } catch (e: any) {
-      setTxStatus({ type: 'error', message: e.message || 'Voting transaction failed.' });
+    } catch (error: unknown) {
+      setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Voting transaction failed.' });
     }
   };
 
@@ -328,8 +325,8 @@ function App() {
       setIsVotingOpen(false);
       addEvent('warning', 'Voting period has been officially closed by admin.');
       fetchBalance();
-    } catch (e: any) {
-      setTxStatus({ type: 'error', message: e.message || 'Closing voting period failed.' });
+    } catch (error: unknown) {
+      setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Closing voting period failed.' });
     }
   };
 
