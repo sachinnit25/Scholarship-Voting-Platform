@@ -143,9 +143,11 @@
 ---
 
 ### ✅ 7. Demo Video Link
-**Status:** DOCUMENTED (Video optional but referenced)
-**Note:** Live app demonstrates all features in real-time
-**Alternative:** Live demo at https://frontend-eta-seven-24.vercel.app
+**Status:** COMPLETE
+- **Demo video file:** `docs/videos/demo-video.mp4`
+- **Demo video reference:** `docs/videos/demo-video.mp4`
+- **Note:** Live app demonstrates all features in real-time
+- **Alternative:** Live demo at https://frontend-eta-seven-24.vercel.app
 
 ---
 

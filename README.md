@@ -145,5 +145,6 @@ This repository includes a GitHub Actions workflow that automatically:
 
 ### Visual Proof
 - Screenshots available in `docs/screenshots/desktop-view.png` and `docs/screenshots/mobile-view.png`
+- Demo video available in `docs/videos/demo-video.mp4`
 
 Simply visit the deployed testnet URL above with your Freighter Wallet configured for Testnet to start voting on scholarship applications!
