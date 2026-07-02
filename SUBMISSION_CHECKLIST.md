@@ -122,6 +122,9 @@
 - `docs/screenshots/desktop-view.png`
 - `docs/screenshots/mobile-view.png`
 
+**Screenshot Capture:**
+- A local capture script is available at `docs/capture_screenshots.py`
+
 #### C. Analytics & Monitoring Setup
 **Status:** COMPLETE - MONITORING.md
 - ✅ Vercel Analytics integrated
