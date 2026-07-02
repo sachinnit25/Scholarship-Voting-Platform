@@ -86,6 +86,7 @@
 - ✅ Settings configuration
 - ✅ Blockchain events log
 - ✅ Header with wallet info
+- ✅ Live screenshot evidence added in `docs/screenshots`
 
 **Components Shown:**
 - 3-column candidate grid
@@ -116,6 +117,10 @@
 - Tablet: 1.8s load
 - Mobile: 2.3s load
 - All Core Web Vitals: Green ✓
+
+**Screenshot Assets:**
+- `docs/screenshots/desktop-view.png`
+- `docs/screenshots/mobile-view.png`
 
 #### C. Analytics & Monitoring Setup
 **Status:** COMPLETE - MONITORING.md

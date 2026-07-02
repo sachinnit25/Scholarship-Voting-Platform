@@ -6,6 +6,16 @@ The Scholarship Voting Platform is fully responsive and optimized for all device
 
 ---
 
+## Live Screenshots
+
+### Desktop UI
+![Desktop View](docs/screenshots/desktop-view.png)
+
+### Mobile UI
+![Mobile View](docs/screenshots/mobile-view.png)
+
+---
+
 ## Desktop View (1920px+)
 
 ### Main Dashboard

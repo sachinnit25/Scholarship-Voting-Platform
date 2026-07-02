@@ -143,4 +143,7 @@ This repository includes a GitHub Actions workflow that automatically:
 - runs Soroban contract tests
 - deploys the frontend to Vercel when changes are merged into the main branch and Vercel secrets are configured
 
+### Visual Proof
+- Screenshots available in `docs/screenshots/desktop-view.png` and `docs/screenshots/mobile-view.png`
+
 Simply visit the deployed testnet URL above with your Freighter Wallet configured for Testnet to start voting on scholarship applications!
