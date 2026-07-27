@@ -147,4 +147,11 @@ This repository includes a GitHub Actions workflow that automatically:
 - Screenshots available in `docs/screenshots/desktop-view.png` and `docs/screenshots/mobile-view.png`
 - Demo video available in `docs/videos/demo-video.mp4`
 
+### Submission Evidence
+- Public GitHub repository: https://github.com/sachinnit25/Scholarship-Voting-Platform
+- Wallet interaction proof: [WALLET_TESTING.md](WALLET_TESTING.md)
+- User feedback summary: [USER_FEEDBACK.md](USER_FEEDBACK.md)
+- Monitoring setup: [MONITORING.md](MONITORING.md)
+- Responsive design proof: [RESPONSIVE_DESIGN.md](RESPONSIVE_DESIGN.md)
+
 Simply visit the deployed testnet URL above with your Freighter Wallet configured for Testnet to start voting on scholarship applications!

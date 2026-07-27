@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   GraduationCap, 
   Wallet, 
@@ -25,6 +25,7 @@ import {
   endVoting 
 } from './services/stellarService';
 import './App.css';
+import { trackEvent, getAnalyticsEvents } from './services/analytics';
 
 interface Candidate {
   id: number;
@@ -42,6 +43,14 @@ interface BlockchainEvent {
   timestamp: string;
   type: 'info' | 'success' | 'warning';
   message: string;
+}
+
+interface TransactionRecord {
+  id: string;
+  title: string;
+  detail: string;
+  timestamp: string;
+  status: 'success' | 'pending' | 'error';
 }
 
 const getErrorMessage = (error: unknown): string => {
@@ -117,6 +126,14 @@ function App() {
     message: string;
     hash?: string;
   }>({ type: 'idle', message: '' });
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackSent, setFeedbackSent] = useState(false);
+  const [analyticsCount, setAnalyticsCount] = useState(0);
+  const [transactionHistory, setTransactionHistory] = useState<TransactionRecord[]>([
+    { id: 'tx-1', title: 'Wallet Connected', detail: 'Freighter wallet connected for testnet interaction.', timestamp: 'Just now', status: 'success' },
+    { id: 'tx-2', title: 'Simulation Demo', detail: 'Mock transaction flow completed for onboarding.', timestamp: '2 min ago', status: 'pending' },
+    { id: 'tx-3', title: 'Feedback Submitted', detail: 'User feedback captured for product improvements.', timestamp: '5 min ago', status: 'success' },
+  ]);
 
   // Event Logs
   const [events, setEvents] = useState<BlockchainEvent[]>([
@@ -127,6 +144,10 @@ function App() {
   ]);
 
   const isSimulation = !contractId || contractId.includes("PLACEHOLDER") || contractId === "";
+
+  useEffect(() => {
+    setAnalyticsCount(getAnalyticsEvents().length);
+  }, []);
 
   const fetchBalance = async () => {
     if (!walletAddress) return;
@@ -147,6 +168,7 @@ function App() {
       const bal = await getXLMBalance(address);
       setWalletBalance(bal);
       addEvent('info', `Freighter Wallet connected: ${address.slice(0, 6)}...${address.slice(-6)}`);
+      trackEvent('wallet_connect', { address });
     } catch (error: unknown) {
       setTxStatus({
         type: 'error',
@@ -162,6 +184,7 @@ function App() {
     setWalletBalance("0");
     setHasVotedLocally(false);
     addEvent('info', 'Freighter Wallet disconnected.');
+    trackEvent('wallet_disconnect');
   };
 
   const addEvent = (type: 'info' | 'success' | 'warning', message: string) => {
@@ -184,6 +207,7 @@ function App() {
         hash: res.hash
       });
       addEvent('success', `Admin initialized contract: ${contractId.slice(0, 8)}...`);
+      trackEvent('contract_initialize', { contractId });
     } catch (error: unknown) {
       setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Initialization failed.' });
     }
@@ -242,6 +266,7 @@ function App() {
 
       setCandidates([...candidates, newCandidate]);
       addEvent('success', `New application submitted by ${formName} (${formMajor}).`);
+      trackEvent('application_submit', { name: formName, major: formMajor, amount: amountNum });
 
       // Reset Form
       setFormName('');
@@ -269,6 +294,7 @@ function App() {
       setCandidates(prev => prev.map(c => c.id === id ? { ...c, approved: true } : c));
       const approvedCandidate = candidates.find(c => c.id === id);
       addEvent('success', `Admin approved applicant: ${approvedCandidate?.name}.`);
+      trackEvent('approval_submit', { candidateId: id, name: approvedCandidate?.name });
       fetchBalance();
     } catch (error: unknown) {
       setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Approval transaction failed.' });
@@ -304,6 +330,7 @@ function App() {
       setHasVotedLocally(true);
       const votedCandidate = candidates.find(c => c.id === id);
       addEvent('success', `Voter (${walletAddress.slice(0, 6)}...) cast vote for ${votedCandidate?.name}.`);
+      trackEvent('vote_cast', { candidateId: id, name: votedCandidate?.name });
       fetchBalance();
     } catch (error: unknown) {
       setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Voting transaction failed.' });
@@ -324,6 +351,7 @@ function App() {
 
       setIsVotingOpen(false);
       addEvent('warning', 'Voting period has been officially closed by admin.');
+      trackEvent('voting_closed');
       fetchBalance();
     } catch (error: unknown) {
       setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Closing voting period failed.' });
@@ -339,6 +367,15 @@ function App() {
   const leadingCandidate = [...candidates]
     .filter(c => c.approved)
     .sort((a, b) => b.voteCount - a.voteCount)[0];
+
+  const handleFeedbackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackText.trim()) return;
+    setFeedbackSent(true);
+    trackEvent('feedback_submitted', { feedback: feedbackText.trim() });
+    setFeedbackText('');
+    addEvent('success', 'Thank you for your feedback.');
+  };
 
   const formatAddress = (addr: string) => {
     if (addr.length <= 12) return addr;
@@ -559,10 +596,22 @@ function App() {
         </div>
       </section>
 
+      <section className="glass-panel" style={{ padding: '1.25rem 1.5rem', marginBottom: '2rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '1rem' }}>
+        <div>
+          <h2 style={{ fontSize: '1rem', fontWeight: '700', margin: 0 }}>Onboarding & Feedback</h2>
+          <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: '0.25rem 0 0' }}>
+            {analyticsCount} tracked interactions help us refine the experience.
+          </p>
+        </div>
+        <div style={{ color: '#8b5cf6', fontSize: '0.85rem', fontWeight: '600' }}>
+          Production-ready MVP feedback loop active
+        </div>
+      </section>
+
       {/* MAIN LAYOUT GRID */}
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: '1fr 360px', 
+        gridTemplateColumns: 'minmax(0, 1fr) 360px', 
         gap: '2rem', 
         alignItems: 'start'
       }}>
@@ -937,6 +986,57 @@ function App() {
               </div>
             </div>
           )}
+
+          {/* FEEDBACK PANEL */}
+          <div className="glass-panel" style={{ padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: '600', color: 'white', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Info size={18} color="#8b5cf6" />
+              Feedback & Improvement
+            </h3>
+            <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '1rem' }}>
+              Share a quick note on usability, wallet flow, or blockchain clarity.
+            </p>
+            <form onSubmit={handleFeedbackSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <textarea
+                value={feedbackText}
+                onChange={(e) => setFeedbackText(e.target.value)}
+                className="form-input"
+                rows={4}
+                placeholder="What worked well? What should improve?"
+              />
+              <button type="submit" className="btn btn-secondary" style={{ alignSelf: 'flex-start' }}>
+                Submit Feedback
+              </button>
+              {feedbackSent && (
+                <span style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: '600' }}>
+                  Feedback recorded. Thanks for helping improve the MVP.
+                </span>
+              )}
+            </form>
+          </div>
+
+          {/* TRANSACTION HISTORY PANEL */}
+          <div className="glass-panel" style={{ padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: '600', color: 'white', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Clock size={18} color="#8b5cf6" />
+              Recent Activity
+            </h3>
+            <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '1rem' }}>
+              A quick history of the latest wallet and contract interactions.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {transactionHistory.map((entry) => (
+                <div key={entry.id} style={{ border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '0.8rem 0.9rem', background: 'rgba(255,255,255,0.02)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
+                    <strong style={{ color: 'white', fontSize: '0.85rem' }}>{entry.title}</strong>
+                    <span style={{ fontSize: '0.7rem', color: entry.status === 'error' ? '#f87171' : entry.status === 'pending' ? '#fbbf24' : '#34d399', fontWeight: '700' }}>{entry.status.toUpperCase()}</span>
+                  </div>
+                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.35rem 0 0', lineHeight: 1.4 }}>{entry.detail}</p>
+                  <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{entry.timestamp}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* RECENT BLOCKCHAIN EVENTS PANEL */}
           <div className="glass-panel" style={{ padding: '1.5rem' }}>

@@ -6,8 +6,8 @@
 - **Alternate Demo:** https://frontend-iwkz8ejfu-yodhadigital331-8554s-projects.vercel.app
 - **Smart Contract Network:** Stellar Testnet
 - **Contract ID:** CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3
-- **Transaction Proof:** https://stellar.expert/explorer/testnet/tx/f4dec41192442c545dfc4fb13366552a5e3180e521be82bb14fcdd2dd1aa0ff9
-
+- **Transaction Proof:** https://stellar.expert/explorer/testnet/tx/f4dec41192442c545dfc4fb13366552a5e3180e521be82bb14fcdd2dd1aa0ff9- **Submission Status:** Production MVP package prepared for Level 4 review
+- **Evidence Package:** README, submission checklist, wallet testing, feedback summary, monitoring docs, and responsive design proof included
 ## Documentation
 - `README.md` — main documentation, setup, deployment, and live demo
 - `SUBMISSION_CHECKLIST.md` — completion verification for all required items
