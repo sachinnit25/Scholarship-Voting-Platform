@@ -10,6 +10,17 @@ const ADMIN: Symbol = symbol_short!("ADMIN");
 const CANDIDATES: Symbol = symbol_short!("CAND");
 const VOTERS: Symbol = symbol_short!("VOTER");
 const VOTING_ACTIVE: Symbol = symbol_short!("ACTIVE");
+const USER_PROFILES: Symbol = symbol_short!("PROFILES");
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UserProfile {
+    pub user: Address,
+    pub cohort_month: String,
+    pub is_new_monthly_user: bool,
+    pub onboarded_timestamp: u64,
+    pub onboarding_completed: bool,
+}
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -170,6 +181,56 @@ impl DecentralizedScholarshipVoting {
     // Get admin
     pub fn get_admin(env: Env) -> Address {
         env.storage().instance().get(&ADMIN).expect("Not initialized")
+    }
+
+    // Register or fetch user onboarding profile with cohort differentiation
+    pub fn onboard_user(
+        env: Env, 
+        user: Address, 
+        cohort_month: String, 
+        is_new_monthly_user: bool, 
+        timestamp: u64
+    ) -> UserProfile {
+        user.require_auth();
+
+        let mut profiles: Map<Address, UserProfile> = 
+            env.storage().instance().get(&USER_PROFILES).unwrap_or(Map::new(&env));
+
+        if let Some(existing) = profiles.get(user.clone()) {
+            return existing;
+        }
+
+        let profile = UserProfile {
+            user: user.clone(),
+            cohort_month,
+            is_new_monthly_user,
+            onboarded_timestamp: timestamp,
+            onboarding_completed: !is_new_monthly_user,
+        };
+
+        profiles.set(user, profile.clone());
+        env.storage().instance().set(&USER_PROFILES, &profiles);
+        profile
+    }
+
+    // Get user profile if exists
+    pub fn get_user_profile(env: Env, user: Address) -> Option<UserProfile> {
+        let profiles: Map<Address, UserProfile> = 
+            env.storage().instance().get(&USER_PROFILES).unwrap_or(Map::new(&env));
+        profiles.get(user)
+    }
+
+    // Mark user onboarding step complete
+    pub fn complete_onboarding(env: Env, user: Address) {
+        user.require_auth();
+        let mut profiles: Map<Address, UserProfile> = 
+            env.storage().instance().get(&USER_PROFILES).expect("Profiles not initialized");
+
+        if let Some(mut profile) = profiles.get(user.clone()) {
+            profile.onboarding_completed = true;
+            profiles.set(user, profile);
+            env.storage().instance().set(&USER_PROFILES, &profiles);
+        }
     }
 
     // Get voting status
