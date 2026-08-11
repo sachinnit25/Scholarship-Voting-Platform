@@ -229,3 +229,28 @@ fn test_vote_closed_panic() {
     let voter = Address::generate(&env);
     client.vote(&voter, &candidate_id);
 }
+
+#[test]
+fn test_onboard_user_monthly_cohort() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register_contract(None, DecentralizedScholarshipVoting);
+    let client = DecentralizedScholarshipVotingClient::new(&env, &contract_id);
+
+    let user = Address::generate(&env);
+    let month = String::from_str(&env, "August 2026");
+
+    let profile = client.onboard_user(&user, &month, &true, &1700000000);
+    assert_eq!(profile.user, user);
+    assert_eq!(profile.cohort_month, month);
+    assert!(profile.is_new_monthly_user);
+    assert!(!profile.onboarding_completed);
+
+    let fetched = client.get_user_profile(&user).unwrap();
+    assert_eq!(fetched, profile);
+
+    client.complete_onboarding(&user);
+    let completed_profile = client.get_user_profile(&user).unwrap();
+    assert!(completed_profile.onboarding_completed);
+}
