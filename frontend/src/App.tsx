@@ -13,7 +13,10 @@ import {
   Settings,
   FileText,
   AlertTriangle,
-  Info
+  Info,
+  Sparkles,
+  HelpCircle,
+  X
 } from 'lucide-react';
 import { 
   connectWallet, 
@@ -26,6 +29,13 @@ import {
 } from './services/stellarService';
 import './App.css';
 import { trackEvent, getAnalyticsEvents } from './services/analytics';
+import { 
+  getOrCreateCohortProfile, 
+  getOnboardingTasks, 
+  saveCohortProfile, 
+  type MonthlyCohortProfile, 
+  type OnboardingTask 
+} from './services/onboardingService';
 
 interface Candidate {
   id: number;
@@ -62,6 +72,11 @@ function App() {
   const [contractId, setContractId] = useState<string>("CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3");
   const [showSettings, setShowSettings] = useState(false);
   const [isAdminSimulated, setIsAdminSimulated] = useState(false);
+
+  // Monthly Onboarding Cohort States
+  const [cohortProfile, setCohortProfile] = useState<MonthlyCohortProfile | null>(null);
+  const [onboardingTasks, setOnboardingTasks] = useState<OnboardingTask[]>([]);
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false);
 
   // Wallet States
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
@@ -167,8 +182,21 @@ function App() {
       setWalletAddress(address);
       const bal = await getXLMBalance(address);
       setWalletBalance(bal);
-      addEvent('info', `Freighter Wallet connected: ${address.slice(0, 6)}...${address.slice(-6)}`);
-      trackEvent('wallet_connect', { address });
+
+      // Onboard monthly user cohort
+      const profile = getOrCreateCohortProfile(address);
+      setCohortProfile(profile);
+      const tasks = getOnboardingTasks(profile.isNewMonthlyUser);
+      setOnboardingTasks(tasks);
+
+      if (profile.isNewMonthlyUser) {
+        setShowOnboardingModal(true);
+        addEvent('success', `✨ New Monthly User Onboarded (${profile.cohortMonth} Cohort)! Welcome bonus active.`);
+      } else {
+        addEvent('info', `Freighter Wallet connected: ${address.slice(0, 6)}...${address.slice(-6)}`);
+      }
+
+      trackEvent('wallet_connect', { address, cohort: profile.cohortMonth, isNewMonthlyUser: profile.isNewMonthlyUser });
     } catch (error: unknown) {
       setTxStatus({
         type: 'error',
@@ -595,6 +623,118 @@ function App() {
           )}
         </div>
       </section>
+
+      {/* NEW MONTHLY USER ONBOARDING BANNER */}
+      {cohortProfile && (
+        <section className="onboarding-banner animate-slide-in">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ background: 'rgba(139, 92, 246, 0.2)', padding: '0.75rem', borderRadius: '50%', color: '#c084fc' }}>
+              <Sparkles size={24} />
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                <span className="cohort-tag">{cohortProfile.cohortMonth} Cohort</span>
+                {cohortProfile.isNewMonthlyUser ? (
+                  <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 'bold' }}>New Monthly Member</span>
+                ) : (
+                  <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Existing Member</span>
+                )}
+              </div>
+              <p style={{ margin: 0, fontSize: '0.88rem', color: '#cbd5e1' }}>
+                {cohortProfile.isNewMonthlyUser 
+                  ? "Welcome! As a new monthly user, your account has been provisioned with priority applicant submission review & cohort onboarding perks."
+                  : "Welcome back! Continuing governance participation for this monthly voting cycle."}
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <button 
+              onClick={() => setShowOnboardingModal(true)}
+              className="btn btn-primary"
+              style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}
+            >
+              <HelpCircle size={16} />
+              {cohortProfile.isNewMonthlyUser ? "View Onboarding Checklist" : "Member Perks"}
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* NEW MONTHLY USER GUIDED MODAL */}
+      {showOnboardingModal && cohortProfile && (
+        <div className="onboarding-modal-overlay">
+          <div className="onboarding-modal animate-slide-in">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Sparkles size={20} color="#8b5cf6" />
+                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 'bold' }}>
+                  {cohortProfile.isNewMonthlyUser ? "New Monthly User Onboarding Guide" : "Cohort Overview"}
+                </h3>
+              </div>
+              <button 
+                onClick={() => setShowOnboardingModal(false)}
+                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.75rem', marginBottom: '1.5rem' }}>
+              <span className="cohort-tag" style={{ marginBottom: '0.5rem' }}>{cohortProfile.cohortMonth}</span>
+              <p style={{ fontSize: '0.85rem', color: '#94a3b8', margin: '0.5rem 0 0' }}>
+                Joined on <strong>{cohortProfile.joinDate}</strong>. Experience tailored onboarding built specifically for monthly cohort arrivals.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+              {onboardingTasks.map((t) => (
+                <div 
+                  key={t.id}
+                  style={{ 
+                    padding: '1rem', 
+                    borderRadius: '0.75rem', 
+                    background: 'rgba(15, 15, 27, 0.8)', 
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: '600' }}>{t.title}</h4>
+                    <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem', color: '#94a3b8' }}>{t.description}</p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      setOnboardingTasks(prev => prev.map(item => item.id === t.id ? { ...item, completed: true } : item));
+                      addEvent('success', `Completed onboarding action: ${t.title}`);
+                    }}
+                    className={`btn ${t.completed ? 'btn-accent' : 'btn-secondary'}`}
+                    style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem' }}
+                  >
+                    {t.completed ? "Completed ✓" : t.actionText}
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => {
+                setShowOnboardingModal(false);
+                if (cohortProfile) {
+                  const updated = { ...cohortProfile, completedOnboarding: true };
+                  setCohortProfile(updated);
+                  saveCohortProfile(updated);
+                }
+              }}
+              className="btn btn-primary" 
+              style={{ width: '100%' }}
+            >
+              Complete Onboarding & Enter Dashboard
+            </button>
+          </div>
+        </div>
+      )}
 
       <section className="glass-panel" style={{ padding: '1.25rem 1.5rem', marginBottom: '2rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '1rem' }}>
         <div>
