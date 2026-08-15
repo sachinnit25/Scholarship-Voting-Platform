@@ -2,6 +2,16 @@
 
 All notable changes to the Scholarship Voting Platform are documented in this file.
 
+## [1.1.0] - August 22, 2026
+
+### 🚀 Dynamic Monthly User Onboarding & Cohort System
+
+#### Added
+- 🌟 Monthly cohort user onboarding system (`onboardingService.ts`)
+- 🏆 On-chain `UserProfile` storage struct and contract methods (`onboard_user`, `get_user_profile`, `complete_onboarding`)
+- 🎯 Dynamic onboarding guided walkthrough modal & monthly cohort badges
+- ⚡ Tailored experience for new monthly signups vs returning platform users
+
 ## [1.0.0] - June 29, 2026
 
 ### 🎉 Initial Release
