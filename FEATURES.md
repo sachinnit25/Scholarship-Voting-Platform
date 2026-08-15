@@ -347,6 +347,22 @@ Features:
 - Auto-scaling
 - Uptime monitoring
 
+### 15. Dynamic Monthly User Onboarding & Cohort Differentiation
+
+**Status:** ✅ Fully Implemented
+
+Features:
+- Differentiated experience for new monthly signups vs returning/existing users
+- Monthly cohort badge tagging (e.g. "August 2026 Cohort")
+- Interactive guided onboarding checklist & welcome modal for new monthly users
+- On-chain `UserProfile` storage struct in Soroban contract tracking cohort month & onboarding state
+- Priority applicant review queuing & welcome perks for new monthly members
+
+**User Benefits:**
+- Tailored introduction for new monthly cohort arrivals
+- Prevents repetitive onboarding for returning platform users
+- Transparent monthly cohort analytics & user segmentation
+
 ---
 
 ## Feature Comparison Matrix
@@ -366,6 +382,7 @@ Features:
 | Performance | ✅ | ✅ | ✅ |
 | Accessibility | ✅ | ✅ | ✅ |
 | Deployment | ✅ | ✅ | ✅ |
+| Monthly User Onboarding | ✅ | ✅ | ✅ |
 
 ---
 
@@ -384,6 +401,6 @@ Features:
 
 ---
 
-**Last Updated:** June 29, 2026  
-**Total Features:** 14 Complete  
+**Last Updated:** August 22, 2026  
+**Total Features:** 15 Complete  
 **Status:** Production Ready ✅
