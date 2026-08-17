@@ -143,7 +143,14 @@ This repository includes a GitHub Actions workflow that automatically:
 - runs Soroban contract tests
 - deploys the frontend to Vercel when changes are merged into the main branch and Vercel secrets are configured
 
-### Visual Proof
+### Visual Proof & UI Preview
+
+#### 📱 Mobile Responsive Interface View
+![Mobile Interface View](docs/screenshots/mobile-view.png)
+
+#### 💻 Desktop Dashboard View
+![Desktop Interface View](docs/screenshots/desktop-view.png)
+
 - Screenshots available in `docs/screenshots/desktop-view.png` and `docs/screenshots/mobile-view.png`
 - Demo video available in `docs/videos/demo-video.mp4`
 
