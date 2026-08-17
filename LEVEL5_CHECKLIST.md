@@ -6,7 +6,7 @@
 - **Live Demo Application:** https://frontend-eta-seven-24.vercel.app
 - **Production Vercel URL:** https://frontend-8f66yrgff-yodhadigital331-8554s-projects.vercel.app
 - **Smart Contract ID (Stellar Testnet):** `CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3`
-- **Total Verified Commits:** 28 Commits (Exceeding 20+ requirement)
+- **Total Verified Commits:** 36 Commits (Exceeding 20+ requirement)
 
 ---
 
@@ -15,7 +15,7 @@
 | Requirement Item | Status | Verification & Link / Details |
 | :--- | :---: | :--- |
 | **1. Public GitHub Repository** | ✅ COMPLETE | [GitHub Repository](https://github.com/sachinnit25/Scholarship-Voting-Platform) |
-| **2. Minimum 20+ Meaningful Commits** | ✅ COMPLETE | 28 commits on `main` branch (`6df2942`, `ae8368f`, `69cd4b9`, `ab8dfff`, `6146ed0`, `ccca678`, etc.) |
+| **2. Minimum 20+ Meaningful Commits** | ✅ COMPLETE | 36 commits on `main` branch (`f23fa36`, `01466b8`, `f8e4e37`, `22e2b06`, `9ffb732`, `6541ff2`, `5ab230c`, `6df2942`, `ae8368f`, etc.) |
 | **3. Live Deployed Application** | ✅ COMPLETE | [Production Vercel dApp](https://frontend-eta-seven-24.vercel.app) |
 | **4. Pitch Deck / Presentation** | ✅ COMPLETE | Documented in [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md) & [`PITCH_DECK.md`](PITCH_DECK.md) |
 | **5. Demo Video Link** | ✅ COMPLETE | Video file at [`docs/videos/demo-video.mp4`](docs/videos/demo-video.mp4) |
@@ -49,6 +49,7 @@ The full pitch deck is available in [`PITCH_DECK.md`](PITCH_DECK.md) covering:
 
 | Feedback Received | Implemented Feature / Fix | Commit Link / Hash |
 | :--- | :--- | :--- |
+| *"New monthly users should be onboarded differently from old users"* | Implemented dynamic monthly cohort user onboarding system & on-chain `UserProfile` storage | [`5ab230c`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/5ab230c), [`9ffb732`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/9ffb732), [`f8e4e37`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/f8e4e37) |
 | *"Raw HTTP 400 errors popped up when network RPC lagged"* | Implemented graceful Horizon error recovery and instant simulation fallback | [`6df2942`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/6df2942) |
 | *"Unused variables and build warnings broke production deploys"* | Cleaned up TypeScript warnings and optimized production Vite chunks | [`ae8368f`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/ae8368f) |
 | *"Need to track user analytics and onboarding interactions"* | Added real-time user action tracking & analytics logger | [`69cd4b9`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/69cd4b9) |
