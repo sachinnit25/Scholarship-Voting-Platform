@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { 
   GraduationCap, 
   Wallet, 
@@ -143,7 +143,7 @@ function App() {
   }>({ type: 'idle', message: '' });
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackSent, setFeedbackSent] = useState(false);
-  const [analyticsCount, setAnalyticsCount] = useState(0);
+  const [analyticsCount] = useState(() => getAnalyticsEvents().length);
   const [transactionHistory] = useState<TransactionRecord[]>([
     { id: 'tx-1', title: 'Wallet Connected', detail: 'Freighter wallet connected for testnet interaction.', timestamp: 'Just now', status: 'success' },
     { id: 'tx-2', title: 'Simulation Demo', detail: 'Mock transaction flow completed for onboarding.', timestamp: '2 min ago', status: 'pending' },
@@ -159,10 +159,6 @@ function App() {
   ]);
 
   const isSimulation = !contractId || contractId.includes("PLACEHOLDER") || contractId === "";
-
-  useEffect(() => {
-    setAnalyticsCount(getAnalyticsEvents().length);
-  }, []);
 
   const fetchBalance = async () => {
     if (!walletAddress) return;
