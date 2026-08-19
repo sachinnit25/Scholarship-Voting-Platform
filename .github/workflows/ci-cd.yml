@@ -37,6 +37,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Test Soroban contract
+        working-directory: .
         run: cargo test --manifest-path contract/scholarship-contract/Cargo.toml
 
   deploy:
