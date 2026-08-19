@@ -57,7 +57,7 @@
 ### ✅ 4. Live Demo Link
 **Status:** COMPLETE  
 
-**Primary URL:** https://frontend-iwkz8ejfu-yodhadigital331-8554s-projects.vercel.app  
+**Primary URL:** https://frontend-8f66yrgff-yodhadigital331-8554s-projects.vercel.app  
 **Alias URL:** https://frontend-eta-seven-24.vercel.app  
 **Platform:** Vercel  
 **Status:** Active and Running ✓  

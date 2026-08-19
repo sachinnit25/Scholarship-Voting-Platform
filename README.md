@@ -128,7 +128,7 @@ The application is deployed and ready to use on Stellar Testnet.
 
 ### Proof of Testnet Deployment
 - **Live dApp URL**: https://frontend-eta-seven-24.vercel.app
-- **Alternate Vercel URL**: https://frontend-iwkz8ejfu-yodhadigital331-8554s-projects.vercel.app
+- **Production Vercel URL**: https://frontend-8f66yrgff-yodhadigital331-8554s-projects.vercel.app
 - **Stellar Testnet Contract**: https://lab.stellar.org/r/testnet/contract/CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5P3
 - **Transaction Proof**: https://stellar.expert/explorer/testnet/tx/f4dec41192442c545dfc4fb13366552a5e3180e521be82bb14fcdd2dd1aa0ff9
 

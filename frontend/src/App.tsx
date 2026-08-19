@@ -129,7 +129,7 @@ function App() {
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [analyticsCount, setAnalyticsCount] = useState(0);
-  const [transactionHistory, setTransactionHistory] = useState<TransactionRecord[]>([
+  const [transactionHistory] = useState<TransactionRecord[]>([
     { id: 'tx-1', title: 'Wallet Connected', detail: 'Freighter wallet connected for testnet interaction.', timestamp: 'Just now', status: 'success' },
     { id: 'tx-2', title: 'Simulation Demo', detail: 'Mock transaction flow completed for onboarding.', timestamp: '2 min ago', status: 'pending' },
     { id: 'tx-3', title: 'Feedback Submitted', detail: 'User feedback captured for product improvements.', timestamp: '5 min ago', status: 'success' },
