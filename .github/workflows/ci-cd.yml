@@ -33,7 +33,7 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-     - name: Setup Rust
+- name: Setup Rust
   uses: dtolnay/rust-toolchain@stable
 
 - name: Test Soroban contract
