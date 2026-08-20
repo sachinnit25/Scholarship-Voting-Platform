@@ -33,11 +33,12 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+     - name: Setup Rust
+  uses: dtolnay/rust-toolchain@stable
 
-      - name: Test Soroban contract
-        working-directory: .
+- name: Test Soroban contract
+  working-directory: .
+  run: cargo test --manifest-path contract/scholarship-contract/Cargo.toml
         run: cargo test --manifest-path contract/scholarship-contract/Cargo.toml
 
   deploy:
