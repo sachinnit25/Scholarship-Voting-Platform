@@ -149,7 +149,8 @@ This repository includes a GitHub Actions workflow that automatically:
 ![Mobile Interface View](docs/screenshots/mobile-view.png)
 
 #### 💻 Desktop Dashboard View
-![Desktop Interface View](docs/screenshots/desktop-view.png)
+![Desktop Interface View](<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f6c84d80-3e26-4856-9906-c0d248861f1c" />
+)
 
 - Screenshots available in `docs/screenshots/desktop-view.png` and `docs/screenshots/mobile-view.png`
 - Demo video available in `docs/videos/demo-video.mp4`
