@@ -152,9 +152,11 @@ This repository includes a GitHub Actions workflow that automatically:
 ![Desktop Interface View](<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f6c84d80-3e26-4856-9906-c0d248861f1c" />
 )
 
-- Screenshots available in `docs/screenshots/desktop-view.png` and `docs/screenshots/mobile-view.png`
-- Demo video available in `docs/videos/demo-video.mp4`
-
+- Screenshots available in <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb992cb6-8dfa-41d8-acb3-8da76dd78ba5" />
+` and `docs/screenshots/mobile-view.png`
+- Screenshots available in `<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4baf3ad5-3d7c-43df-8d0e-cf3daced9595" />
+` and ``
+- Demo video available in `https://youtu.be/CdfzwHKqVf4`
 ### Submission Evidence
 - **Public GitHub Repository**: https://github.com/sachinnit25/Scholarship-Voting-Platform
 - **Level 5 Pitch Deck**: [PITCH_DECK.md](PITCH_DECK.md)
