@@ -129,12 +129,12 @@ The application is deployed and ready to use on Stellar Testnet.
 ### Proof of Testnet Deployment
 - **Live dApp URL**: https://frontend-eta-seven-24.vercel.app
 - **Production Vercel URL**: https://frontend-8f66yrgff-yodhadigital331-8554s-projects.vercel.app
-- **Stellar Testnet Contract**: https://lab.stellar.org/r/testnet/contract/CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5P3
+- **Stellar Testnet Contract**: https://stellar.expert/explorer/testnet/contract/CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3
 - **Transaction Proof**: https://stellar.expert/explorer/testnet/tx/f4dec41192442c545dfc4fb13366552a5e3180e521be82bb14fcdd2dd1aa0ff9
 
 **Contract Information:**
 - **Network**: Stellar Testnet
-- **Contract ID**: `CBL6SY43NK7VWYJ6J3RYTSJ5GPLYARPRDAGAOEYTKV5P3`
+- **Contract ID**: `CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3`
 - **Status**: Active and ready for transactions
 
 ### CI/CD Pipeline
