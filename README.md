@@ -154,9 +154,9 @@ This repository includes a GitHub Actions workflow that automatically:
 
 - Screenshots available in <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb992cb6-8dfa-41d8-acb3-8da76dd78ba5" />
 ` and `docs/screenshots/mobile-view.png`
-- Screenshots available in `<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4baf3ad5-3d7c-43df-8d0e-cf3daced9595" />` and `<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/3fab2019-8306-434f-a9c8-0958c62998f0" />
+
 `
-- Demo video available in `https://youtu.be/CdfzwHKqVf4`
+- Demo video available in "https://www.youtube.com/watch?v=CdfzwHKqVf4"
 ### Submission Evidence
 - **Public GitHub Repository**: https://github.com/sachinnit25/Scholarship-Voting-Platform
 - **Level 5 Pitch Deck**: [PITCH_DECK.md](PITCH_DECK.md)
