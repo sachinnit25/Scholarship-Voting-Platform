@@ -11,6 +11,10 @@ const CANDIDATES: Symbol = symbol_short!("CAND");
 const VOTERS: Symbol = symbol_short!("VOTER");
 const VOTING_ACTIVE: Symbol = symbol_short!("ACTIVE");
 const USER_PROFILES: Symbol = symbol_short!("PROFILES");
+const CREDITS: Symbol = symbol_short!("CREDITS");
+const QV_VOTES: Symbol = symbol_short!("QVVOTES");
+
+const DEFAULT_VOTER_CREDITS: u32 = 100;
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -33,6 +37,7 @@ pub struct Candidate {
     pub requested_amount: u32,
     pub vote_count: u32,
     pub approved: bool,
+    pub effective_qv_score: u32,
 }
 
 #[contract]
@@ -76,6 +81,7 @@ impl DecentralizedScholarshipVoting {
             requested_amount,
             vote_count: 0,
             approved: false, // Must be approved by admin
+            effective_qv_score: 0,
         });
 
         env.storage().instance().set(&CANDIDATES, &candidates);
@@ -132,14 +138,95 @@ impl DecentralizedScholarshipVoting {
             panic!("Candidate is not approved for voting");
         }
 
-        // Increment vote count
+        // Increment vote count and effective_qv_score
         candidate.vote_count += 1;
+        candidate.effective_qv_score += 1;
         candidates.set(candidate_id, candidate);
         env.storage().instance().set(&CANDIDATES, &candidates);
 
         // Mark voter as voted
         voters.set(voter, true);
         env.storage().instance().set(&VOTERS, &voters);
+    }
+
+    // Cast quadratic votes for an approved candidate with N^2 credit cost scaling
+    pub fn vote_quadratic(env: Env, voter: Address, candidate_id: u32, vote_units: u32) {
+        voter.require_auth();
+
+        if vote_units == 0 {
+            panic!("Must vote at least 1 unit");
+        }
+
+        let active: bool = env.storage().instance().get(&VOTING_ACTIVE).unwrap_or(false);
+        if !active {
+            panic!("Voting is closed");
+        }
+
+        let mut candidates: Vec<Candidate> =
+            env.storage().instance().get(&CANDIDATES).expect("No candidates found");
+
+        if candidate_id >= candidates.len() {
+            panic!("Invalid candidate ID");
+        }
+
+        let mut candidate = candidates.get(candidate_id).unwrap();
+        if !candidate.approved {
+            panic!("Candidate is not approved for voting");
+        }
+
+        let mut credits_map: Map<Address, u32> =
+            env.storage().instance().get(&CREDITS).unwrap_or(Map::new(&env));
+        let voter_credits = credits_map.get(voter.clone()).unwrap_or(DEFAULT_VOTER_CREDITS);
+
+        let mut qv_votes_map: Map<Address, Map<u32, u32>> =
+            env.storage().instance().get(&QV_VOTES).unwrap_or(Map::new(&env));
+        let mut voter_cand_map: Map<u32, u32> =
+            qv_votes_map.get(voter.clone()).unwrap_or(Map::new(&env));
+
+        let current_votes = voter_cand_map.get(candidate_id).unwrap_or(0);
+        let new_total_votes = current_votes + vote_units;
+
+        let cost_old = current_votes * current_votes;
+        let cost_new = new_total_votes * new_total_votes;
+        let incremental_cost = cost_new - cost_old;
+
+        if voter_credits < incremental_cost {
+            panic!("Insufficient voting credits");
+        }
+
+        let new_credits = voter_credits - incremental_cost;
+        credits_map.set(voter.clone(), new_credits);
+        env.storage().instance().set(&CREDITS, &credits_map);
+
+        voter_cand_map.set(candidate_id, new_total_votes);
+        qv_votes_map.set(voter.clone(), voter_cand_map);
+        env.storage().instance().set(&QV_VOTES, &qv_votes_map);
+
+        candidate.vote_count += vote_units;
+        candidate.effective_qv_score += vote_units;
+        candidates.set(candidate_id, candidate);
+        env.storage().instance().set(&CANDIDATES, &candidates);
+
+        let mut voters: Map<Address, bool> =
+            env.storage().instance().get(&VOTERS).unwrap_or(Map::new(&env));
+        voters.set(voter, true);
+        env.storage().instance().set(&VOTERS, &voters);
+    }
+
+    pub fn get_voter_credits(env: Env, voter: Address) -> u32 {
+        let credits_map: Map<Address, u32> =
+            env.storage().instance().get(&CREDITS).unwrap_or(Map::new(&env));
+        credits_map.get(voter).unwrap_or(DEFAULT_VOTER_CREDITS)
+    }
+
+    pub fn get_voter_votes_for_candidate(env: Env, voter: Address, candidate_id: u32) -> u32 {
+        let qv_votes_map: Map<Address, Map<u32, u32>> =
+            env.storage().instance().get(&QV_VOTES).unwrap_or(Map::new(&env));
+        if let Some(voter_cand_map) = qv_votes_map.get(voter) {
+            voter_cand_map.get(candidate_id).unwrap_or(0)
+        } else {
+            0
+        }
     }
 
     // Close voting (admin only)

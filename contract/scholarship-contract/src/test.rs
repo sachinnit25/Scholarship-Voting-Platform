@@ -254,3 +254,68 @@ fn test_onboard_user_monthly_cohort() {
     let completed_profile = client.get_user_profile(&user).unwrap();
     assert!(completed_profile.onboarding_completed);
 }
+
+#[test]
+fn test_quadratic_voting_cost_deduction() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register_contract(None, DecentralizedScholarshipVoting);
+    let client = DecentralizedScholarshipVotingClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+    client.initialize(&admin);
+
+    let student = Address::generate(&env);
+    let candidate_id = client.apply_scholarship(
+        &student,
+        &String::from_str(&env, "Alice"),
+        &String::from_str(&env, "Engineering"),
+        &String::from_str(&env, "Clean Water Tech"),
+        &5000,
+    );
+    client.approve_candidate(&candidate_id);
+
+    let voter = Address::generate(&env);
+    assert_eq!(client.get_voter_credits(&voter), 100);
+
+    // Vote 3 units (cost = 3^2 = 9 credits)
+    client.vote_quadratic(&voter, &candidate_id, &3);
+    assert_eq!(client.get_voter_credits(&voter), 91);
+    assert_eq!(client.get_voter_votes_for_candidate(&voter, &candidate_id), 3);
+
+    // Vote 2 more units (total = 5 units, total cost = 25, incremental cost = 25 - 9 = 16)
+    client.vote_quadratic(&voter, &candidate_id, &2);
+    assert_eq!(client.get_voter_credits(&voter), 75);
+    assert_eq!(client.get_voter_votes_for_candidate(&voter, &candidate_id), 5);
+
+    let candidate = client.get_candidate(&candidate_id);
+    assert_eq!(candidate.effective_qv_score, 5);
+}
+
+#[test]
+#[should_panic(expected = "Insufficient voting credits")]
+fn test_quadratic_voting_insufficient_credits_panic() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register_contract(None, DecentralizedScholarshipVoting);
+    let client = DecentralizedScholarshipVotingClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+    client.initialize(&admin);
+
+    let student = Address::generate(&env);
+    let candidate_id = client.apply_scholarship(
+        &student,
+        &String::from_str(&env, "Bob"),
+        &String::from_str(&env, "Biotech"),
+        &String::from_str(&env, "Genomics Research"),
+        &7000,
+    );
+    client.approve_candidate(&candidate_id);
+
+    let voter = Address::generate(&env);
+    // 11 votes costs 11^2 = 121 > 100 available credits
+    client.vote_quadratic(&voter, &candidate_id, &11);
+}
