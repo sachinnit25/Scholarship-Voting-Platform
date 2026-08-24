@@ -146,7 +146,10 @@ This repository includes a GitHub Actions workflow that automatically:
 ### Visual Proof & UI Preview
 
 #### 📱 Mobile Responsive Interface View
-![Mobile Interface View](docs/screenshots/mobile-view.png)
+![Mobile Interface View](<img width="806" height="1601" alt="WhatsApp Image 2026-08-22 at 8 02 35 PM" src="https://github.com/user-attachments/assets/aed099ec-67ae-4d45-9ce5-ef15d941f784" />
+)(<img width="604" height="1279" alt="WhatsApp Image 2026-08-22 at 8 02 36 PM (1)" src="https://github.com/user-attachments/assets/c2f9533e-30d4-415a-bc0d-76d6a5d08cac" />
+)(<img width="606" height="1280" alt="WhatsApp Image 2026-08-22 at 8 02 36 PM" src="https://github.com/user-attachments/assets/74941f34-520f-4eb7-8367-3af608b5b7a7" />
+)
 
 #### 💻 Desktop Dashboard View
 ![Desktop Interface View](<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f6c84d80-3e26-4856-9906-c0d248861f1c" />
