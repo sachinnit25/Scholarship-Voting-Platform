@@ -49,6 +49,8 @@ The full pitch deck is available in [`PITCH_DECK.md`](PITCH_DECK.md) covering:
 
 | Feedback Received | Implemented Feature / Fix | Commit Link / Hash |
 | :--- | :--- | :--- |
+| *"Whale voters with large XLM balances could overpower community preferences"* | Implemented Quadratic Voting (QV) in Soroban (`vote_quadratic`) where $N$ votes cost $N^2$ credits | [`ddb23e6`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/ddb23e6) |
+| *"Voters wanted to preview credit deductions and choose vote intensity dynamically"* | Added candidate card vote stepper, credit calculator indicator, and credit balance dashboard card | [`9a53193`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/9a53193) |
 | *"New monthly users should be onboarded differently from old users"* | Implemented dynamic monthly cohort user onboarding system & on-chain `UserProfile` storage | [`5ab230c`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/5ab230c), [`9ffb732`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/9ffb732), [`f8e4e37`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/f8e4e37) |
 | *"Raw HTTP 400 errors popped up when network RPC lagged"* | Implemented graceful Horizon error recovery and instant simulation fallback | [`6df2942`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/6df2942) |
 | *"Unused variables and build warnings broke production deploys"* | Cleaned up TypeScript warnings and optimized production Vite chunks | [`ae8368f`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/ae8368f) |

@@ -208,6 +208,16 @@ Based on feedback collected from our 54 onboarded users, we implemented key prod
 - **Resolution & Implementation:** Implemented live on-screen event log terminal and user analytics tracker.
 - **Git Commit Link:** [`69cd4b9`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/69cd4b9)
 
+### 5. Quadratic Voting (QV) & Sybil Resistance Mechanics (v1.2.0 Major Feature)
+- **User Feedback:** *"Whale voters with large XLM balances could overpower community preferences by single-vote spamming."*
+- **Resolution & Implementation:** Implemented Quadratic Voting in Soroban (`vote_quadratic`) where $N$ votes cost $N^2$ credits ($(V_{\text{new}})^2 - (V_{\text{old}})^2$), allocating a 100-credit budget per address.
+- **Git Commit Link:** [`ddb23e6`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/ddb23e6)
+
+### 6. Interactive Quadratic Vote Stepper & Real-time Credit Calculator
+- **User Feedback:** *"Voters wanted to preview credit deductions and choose vote intensity dynamically."*
+- **Resolution & Implementation:** Added candidate card vote stepper, dynamic credit calculator indicator, and live credit balance dashboard card.
+- **Git Commit Link:** [`9a53193`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/9a53193)
+
 ---
 
 Simply visit the deployed testnet URL above with your Freighter Wallet configured for Testnet to start voting on scholarship applications!
