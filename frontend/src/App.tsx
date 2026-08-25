@@ -25,6 +25,7 @@ import {
   applyScholarship, 
   approveCandidate, 
   voteForCandidate, 
+  voteQuadratic,
   endVoting 
 } from './services/stellarService';
 import './App.css';
@@ -46,6 +47,8 @@ interface Candidate {
   requestedAmount: number;
   voteCount: number;
   approved: boolean;
+  effectiveQvScore?: number;
+  voterVotes?: number;
 }
 
 interface BlockchainEvent {
@@ -83,6 +86,8 @@ function App() {
   const [walletBalance, setWalletBalance] = useState<string>("0");
   const [isConnecting, setIsConnecting] = useState(false);
   const [hasVotedLocally, setHasVotedLocally] = useState(false);
+  const [voterCredits, setVoterCredits] = useState<number>(100);
+  const [selectedVoteUnits, setSelectedVoteUnits] = useState<{ [id: number]: number }>({});
 
   // App States
   const [isVotingOpen, setIsVotingOpen] = useState(true);
@@ -361,6 +366,59 @@ function App() {
     }
   };
 
+  // 4b. Cast Quadratic Vote Action
+  const handleVoteQuadratic = async (id: number) => {
+    if (!walletAddress) {
+      setTxStatus({ type: 'error', message: 'Please connect your wallet to vote.' });
+      return;
+    }
+    if (!isVotingOpen) {
+      setTxStatus({ type: 'error', message: 'Voting has closed.' });
+      return;
+    }
+
+    const units = selectedVoteUnits[id] || 1;
+    const currentCandidateVotes = candidates.find(c => c.id === id)?.voterVotes || 0;
+    const newTotalVotes = currentCandidateVotes + units;
+    const costOld = currentCandidateVotes * currentCandidateVotes;
+    const costNew = newTotalVotes * newTotalVotes;
+    const incrementalCost = costNew - costOld;
+
+    if (voterCredits < incrementalCost) {
+      setTxStatus({
+        type: 'error',
+        message: `Insufficient credits! ${units} vote(s) requires ${incrementalCost} credits (You have ${voterCredits} credits).`
+      });
+      return;
+    }
+
+    try {
+      setTxStatus({ type: 'pending', message: `Casting ${units} quadratic vote(s) (${incrementalCost} credits)...` });
+      const res = await voteQuadratic(contractId, walletAddress, id, units);
+
+      setTxStatus({
+        type: 'success',
+        message: `Quadratic votes cast! Deducted ${incrementalCost} credits.`,
+        hash: res.hash
+      });
+
+      setVoterCredits(prev => prev - incrementalCost);
+      setCandidates(prev => prev.map(c => c.id === id ? {
+        ...c,
+        voteCount: c.voteCount + units,
+        effectiveQvScore: (c.effectiveQvScore || c.voteCount) + units,
+        voterVotes: (c.voterVotes || 0) + units
+      } : c));
+
+      const votedCandidate = candidates.find(c => c.id === id);
+      addEvent('success', `QV Vote: (${walletAddress.slice(0, 6)}...) allocated ${units} vote(s) [${incrementalCost} credits] to ${votedCandidate?.name}.`);
+      trackEvent('vote_quadratic', { candidateId: id, units, cost: incrementalCost });
+      fetchBalance();
+    } catch (error: unknown) {
+      setTxStatus({ type: 'error', message: getErrorMessage(error) || 'Quadratic voting failed.' });
+    }
+  };
+
   // 5. End Voting Period
   const handleEndVoting = async () => {
     try {
@@ -618,6 +676,18 @@ function App() {
             <div style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '1rem' }}>No approved applicants yet</div>
           )}
         </div>
+
+        {/* Metric 5 */}
+        <div className="glass-panel" style={{ padding: '1.5rem', borderLeft: '3px solid #ec4899', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#64748b' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>QV Credit Balance</span>
+            <Sparkles size={18} color="#ec4899" />
+          </div>
+          <div className="stat-val" style={{ color: '#f472b6' }}>{voterCredits} / 100</div>
+          <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
+            Quadratic cost scaling: N votes cost N² credits
+          </p>
+        </div>
       </section>
 
       {/* NEW MONTHLY USER ONBOARDING BANNER */}
@@ -828,26 +898,75 @@ function App() {
                         )}
                       </div>
 
-                      {/* Vote Button */}
-                      <div>
+                      {/* Vote Buttons & Quadratic Stepper */}
+                      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
                         {c.approved ? (
-                          <button 
-                            onClick={() => handleVote(c.id)}
-                            className={`btn ${(!walletAddress || hasVotedLocally || !isVotingOpen) ? 'btn-secondary btn-disabled' : 'btn-accent'}`}
-                            disabled={!walletAddress || hasVotedLocally || !isVotingOpen}
-                            title={
-                              !walletAddress 
-                                ? "Connect wallet to vote" 
-                                : !isVotingOpen 
-                                  ? "Voting has closed" 
-                                  : hasVotedLocally 
-                                    ? "You have already voted" 
-                                    : "Cast 1 vote"
-                            }
-                          >
-                            <CheckCircle size={16} />
-                            {hasVotedLocally ? "Voted" : "Vote Candidate"}
-                          </button>
+                          <>
+                            {/* Standard 1-Vote Button */}
+                            <button 
+                              onClick={() => handleVote(c.id)}
+                              className={`btn ${(!walletAddress || hasVotedLocally || !isVotingOpen) ? 'btn-secondary btn-disabled' : 'btn-accent'}`}
+                              disabled={!walletAddress || hasVotedLocally || !isVotingOpen}
+                              title={
+                                !walletAddress 
+                                  ? "Connect wallet to vote" 
+                                  : !isVotingOpen 
+                                    ? "Voting has closed" 
+                                    : hasVotedLocally 
+                                      ? "You have already voted" 
+                                      : "Cast 1 vote"
+                              }
+                            >
+                              <CheckCircle size={16} />
+                              {hasVotedLocally ? "Voted" : "1 Vote"}
+                            </button>
+
+                            {/* Quadratic Voting Stepper Control */}
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.4rem',
+                              background: 'rgba(139, 92, 246, 0.08)',
+                              padding: '0.35rem 0.65rem',
+                              borderRadius: '8px',
+                              border: '1px solid rgba(139, 92, 246, 0.2)'
+                            }}>
+                              <span style={{ fontSize: '0.75rem', color: '#c084fc', fontWeight: 'bold' }}>QV:</span>
+                              <input
+                                type="number"
+                                min="1"
+                                max="10"
+                                value={selectedVoteUnits[c.id] || 1}
+                                onChange={(e) => {
+                                  const val = Math.max(1, parseInt(e.target.value) || 1);
+                                  setSelectedVoteUnits(prev => ({ ...prev, [c.id]: val }));
+                                }}
+                                style={{
+                                  width: '42px',
+                                  padding: '0.2rem 0.3rem',
+                                  background: 'rgba(15, 23, 42, 0.6)',
+                                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                                  borderRadius: '4px',
+                                  color: 'white',
+                                  fontSize: '0.85rem',
+                                  textAlign: 'center'
+                                }}
+                              />
+                              <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                                ({Math.pow((c.voterVotes || 0) + (selectedVoteUnits[c.id] || 1), 2) - Math.pow(c.voterVotes || 0, 2)} cr)
+                              </span>
+                              <button
+                                onClick={() => handleVoteQuadratic(c.id)}
+                                className="btn btn-primary"
+                                style={{ padding: '0.35rem 0.65rem', fontSize: '0.78rem' }}
+                                disabled={!walletAddress || !isVotingOpen || voterCredits <= 0}
+                                title={`Cast ${selectedVoteUnits[c.id] || 1} vote(s) using Quadratic Voting`}
+                              >
+                                <Sparkles size={13} />
+                                QV Vote
+                              </button>
+                            </div>
+                          </>
                         ) : (
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#f59e0b', fontSize: '0.8rem', fontWeight: '600' }}>
                             <Clock size={14} />

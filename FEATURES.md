@@ -21,6 +21,22 @@ Features:
 
 ---
 
+### 1b. Quadratic Voting & Quadratic Token Cost Mechanics
+**Status:** ✅ Fully Implemented (New Major Evolution)
+
+**Features:**
+- **$N^2$ Credit Cost Scaling**: Casting $N$ votes on a single candidate costs $N^2$ credits ($(V_{\text{new}})^2 - (V_{\text{old}})^2$ incremental cost).
+- **Voter Credit Budgeting**: Every address is allocated 100 voting credits to prevent whale manipulation.
+- **Soroban Smart Contract Core**: `vote_quadratic` function in Rust with storage maps for per-voter candidate vote allocation.
+- **Frontend Stepper & Real-time Preview**: Dynamic cost calculation preview and credit balance indicator in header metrics.
+- **Comprehensive Unit Test Coverage**: Rust host environment unit tests verifying cost math and insufficient credit panics.
+
+**User Benefits:**
+- Prevents wealthy accounts/whales from dominating voting outcomes.
+- Enables community members to express conviction by allocating credits strategically across candidates.
+
+---
+
 ### 2. Candidate Management
 
 #### Application Submission

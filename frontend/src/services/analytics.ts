@@ -5,6 +5,7 @@ export type AnalyticsEventName =
   | 'application_submit'
   | 'approval_submit'
   | 'vote_cast'
+  | 'vote_quadratic'
   | 'voting_closed'
   | 'feedback_submitted';
 

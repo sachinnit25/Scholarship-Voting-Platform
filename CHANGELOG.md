@@ -2,6 +2,18 @@
 
 All notable changes to the Scholarship Voting Platform are documented in this file.
 
+## [1.2.0] - August 25, 2026
+
+### 🗳️ Quadratic Voting (QV) & Sybil Resistance Core Architecture
+
+#### Added
+- 🦀 Smart Contract `vote_quadratic(voter, candidate_id, vote_units)` method in Soroban (`lib.rs`).
+- ⚡ $N^2$ credit cost math: casting $N$ votes costs $N^2$ credits ($(V_{\text{new}})^2 - (V_{\text{old}})^2$).
+- 🛡️ Default 100 voting credit budget per address to eliminate whale dominance.
+- 🧪 Unit tests in Rust host environment (`test_quadratic_voting_cost_deduction`, `test_quadratic_voting_insufficient_credits_panic`).
+- 🎨 Frontend Stepper & Cost Calculator widget for candidate cards in `App.tsx`.
+- 📊 Dashboard Metric 5 card displaying real-time QV credit balance.
+
 ## [1.1.0] - August 22, 2026
 
 ### 🚀 Dynamic Monthly User Onboarding & Cohort System

@@ -197,6 +197,23 @@ export const voteForCandidate = async (contractId: string, voterAddress: string,
 };
 
 /**
+ * Casts quadratic votes for a candidate (with N^2 credit cost scaling).
+ */
+export const voteQuadratic = async (
+  contractId: string,
+  voterAddress: string,
+  candidateId: number,
+  voteUnits: number
+) => {
+  const args = [
+    StellarSdk.Address.fromString(voterAddress).toScVal(),
+    StellarSdk.nativeToScVal(candidateId, { type: "u32" }),
+    StellarSdk.nativeToScVal(voteUnits, { type: "u32" }),
+  ];
+  return await invokeContract(contractId, "vote_quadratic", args);
+};
+
+/**
  * Closes the voting period (Admin only).
  */
 export const endVoting = async (contractId: string) => {
