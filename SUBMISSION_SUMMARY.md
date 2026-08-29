@@ -22,10 +22,12 @@ In alignment with **Level 7 Founder Belt requirements**, the Decentralized Schol
 - **215+ On-chain Transactions**: Applications, quadratic voting rounds, and admin approvals on Stellar Mainnet.
 - **68.5% 30-Day Retention Rate**: Recurring voting cohorts driven by monthly grant allocation rounds.
 
-### 2. Feedback-Driven Product Iteration
+### 2. Feedback-Driven Product Iteration & Month 2 Deliverables
+- **Soroban Milestone Grant Escrow**: Staged payouts (30/40/30) locked in smart contract escrow and released via IPFS proof verification.
+- **Decentralized Dispute DAO**: Community-driven appeal resolution for rejected applications with 3-vote reinstatement threshold.
 - **Anti-Whale Quadratic Voting ($N^2$)**: Soroban Rust contract preventing whale dominance ([`ddb23e6`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/ddb23e6)).
 - **Gasless Transaction Fallback**: Intercepts Horizon RPC 400 errors to guarantee continuous transaction execution ([`6df2942`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/6df2942)).
-- **Mobile-First UX**: Responsive touch target optimization and fluid single-column layout on mobile devices ([`b1c0366`](https://github.com/sachinnit25/Scholarship-Voting-Platform/commit/b1c0366)).
+- **Mobile-First UX**: Responsive touch target optimization and fluid single-column layout on mobile devices.
 
 ### 3. Startup Growth & Ecosystem Leadership
 - **Monthly Growth Report & PMF Analysis**: Complete startup metrics in [`MONTHLY_GROWTH_REPORT.md`](MONTHLY_GROWTH_REPORT.md).
@@ -36,9 +38,10 @@ In alignment with **Level 7 Founder Belt requirements**, the Decentralized Schol
 
 ## 📁 Key Documentation Links
 - [`README.md`](README.md) — System overview, setup, and live badges
+- [`MONTHLY_BUILDER_MONTH2_DIFF.md`](MONTHLY_BUILDER_MONTH2_DIFF.md) — Month 2 Differential Progress & 14-Day Development Schedule Matrix
 - [`LEVEL7_CHECKLIST.md`](LEVEL7_CHECKLIST.md) — Complete Level 7 verification matrix
 - [`MONTHLY_GROWTH_REPORT.md`](MONTHLY_GROWTH_REPORT.md) — Monthly growth report, KPIs, and PMF analysis
 - [`docs/USER_GROWTH_50_MAINNET.md`](docs/USER_GROWTH_50_MAINNET.md) — 54 active mainnet user proof dataset
-- [`docs/SOCIAL_MEDIA_GROWTH.md`](docs/SOCIAL_MEDIA_GROWTH.md) — Social growth analytics & post proofs
 - [`USER_FEEDBACK_ITERATIONS.md`](USER_FEEDBACK_ITERATIONS.md) — Feedback to Git commit mapping
+
 

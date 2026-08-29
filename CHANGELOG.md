@@ -2,7 +2,19 @@
 
 All notable changes to the Scholarship Voting Platform are documented in this file.
 
+## [2.0.0] - August 29, 2026
+
+### 🏆 Soroban Grant Escrow & Dispute DAO Governance Release (Monthly Builder Month 2)
+
+#### Added
+- 🏆 **Soroban Milestone Grant Escrow**: Implemented staged grant payout mechanics (`add_grant_milestone`, `submit_milestone_proof`, `approve_and_disburse_milestone`).
+- ⚖️ **Decentralized Dispute DAO**: Enabled candidate appeals & community voting resolution (`submit_dispute_appeal`, `vote_on_appeal`).
+- 🌐 **Off-Chain IPFS Metadata Service**: Decentralized CID pinning and verification helper (`ipfsService.ts`) for student proof evidence and transcripts.
+- 🎨 **Milestone Tracker & Dispute Appeal UI**: Built `MilestoneTracker.tsx` and `DisputeAppealModal.tsx` React components with glassmorphic design and progress bars.
+- 📊 **Monthly Builder Month 2 Differential Matrix**: Added `MONTHLY_BUILDER_MONTH2_DIFF.md` documenting 14-day commit activity schedule and month-over-month code delta.
+
 ## [1.2.0] - August 25, 2026
+
 
 ### 🗳️ Quadratic Voting (QV) & Sybil Resistance Core Architecture
 
