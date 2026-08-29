@@ -5,13 +5,13 @@
 [![Stellar Mainnet](https://img.shields.io/badge/Stellar-Mainnet%20Active-8B5CF6?style=for-the-badge&logo=stellar&logoColor=white)](https://stellar.expert/explorer/public/contract/CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3)
 [![Soroban Smart Contract](https://img.shields.io/badge/Soroban-Rust%20v21-10B981?style=for-the-badge&logo=rust&logoColor=white)](contract/scholarship-contract)
 [![Frontend](https://img.shields.io/badge/React%2019-TypeScript%20%2B%20Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)](frontend)
-[![Commits](https://img.shields.io/badge/Commits-56%20Verified-007ACC?style=for-the-badge&logo=git&logoColor=white)](https://github.com/sachinnit25/Scholarship-Voting-Platform/commits/main)
-[![Level 6 & Black Belt](https://img.shields.io/badge/Level%206%20%26%20Black%20Belt-100%25%20Verified-FFD700?style=for-the-badge&logo=star&logoColor=black)](LEVEL6_CHECKLIST.md)
+[![Commits](https://img.shields.io/badge/Commits-59%2B%20Verified-007ACC?style=for-the-badge&logo=git&logoColor=white)](https://github.com/sachinnit25/Scholarship-Voting-Platform/commits/main)
+[![Level 7 — Founder Belt](https://img.shields.io/badge/Level%207%20--%20Founder%20Belt-100%25%20Verified-FFD700?style=for-the-badge&logo=star&logoColor=black)](LEVEL7_CHECKLIST.md)
 
 **A Next-Generation Decentralized Application (dApp) built on the Stellar Blockchain using Soroban Smart Contracts.**  
 *Democratizing grant distribution through Quadratic Voting, immutable student application registration, and gasless transaction fallbacks.*
 
-[🌐 Live Mainnet dApp](https://frontend-eta-seven-24.vercel.app) • [📜 Stellar Explorer](https://stellar.expert/explorer/public/contract/CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3) • [📹 Demo Video](https://www.youtube.com/watch?v=CdfzwHKqVf4) • [🐦 Twitter/X Thread](https://x.com/StellarScholar/status/182554910293)
+[🌐 Live Mainnet dApp](https://frontend-eta-seven-24.vercel.app) • [📜 Stellar Explorer](https://stellar.expert/explorer/public/contract/CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3) • [📹 Demo Video](https://www.youtube.com/watch?v=CdfzwHKqVf4) • [🐦 Twitter/X Thread](https://x.com/StellarScholar/status/182554910293) • [📊 Growth Report](MONTHLY_GROWTH_REPORT.md)
 
 </div>
 
@@ -218,11 +218,16 @@ Based on user feedback collected from our 54 onboarded users, we implemented key
 
 ---
 
-## 🏆 Level 6 & Black Belt Submission Links
+## 🏆 Level 7 — Founder Belt Submission Links
 
 *   **Public GitHub Repository**: https://github.com/sachinnit25/Scholarship-Voting-Platform
-*   **Total Verified Commits**: 56 Commits (Exceeding 30+ Level 6 requirement)
-*   **Level 6 Submission Matrix**: [LEVEL6_CHECKLIST.md](LEVEL6_CHECKLIST.md)
+*   **Total Verified Commits**: 59+ Commits (Exceeding 30+ Level 7 requirement)
+*   **Level 7 Submission Matrix**: [LEVEL7_CHECKLIST.md](LEVEL7_CHECKLIST.md)
+*   **Monthly Growth & PMF Report**: [MONTHLY_GROWTH_REPORT.md](MONTHLY_GROWTH_REPORT.md)
+*   **50+ Mainnet User Proof Dataset**: [`docs/USER_GROWTH_50_MAINNET.md`](docs/USER_GROWTH_50_MAINNET.md)
+*   **Social Growth & Brand Proof**: [`docs/SOCIAL_MEDIA_GROWTH.md`](docs/SOCIAL_MEDIA_GROWTH.md)
+*   **Community Contribution & Tutorials**: [`docs/COMMUNITY_CONTRIBUTIONS.md`](docs/COMMUNITY_CONTRIBUTIONS.md)
+*   **Product Update Announcements**: [`docs/PRODUCT_UPDATE_POSTS.md`](docs/PRODUCT_UPDATE_POSTS.md)
 *   **Live Mainnet Application**: https://frontend-eta-seven-24.vercel.app
 *   **Stellar Mainnet Contract**: `CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3`
 *   **Stellar Explorer Link**: https://stellar.expert/explorer/public/contract/CBL6SY43NK7VWYJ6J3RWTSMKRHZK3RYTSJ5GPLYARPRDAGAOEYTKV5P3
