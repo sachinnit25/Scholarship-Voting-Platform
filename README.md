@@ -19,37 +19,23 @@
 
 ## 🎨 Interactive App Preview
 
-Below is a visual mockup of the glassmorphic desktop interface featuring real-time Freighter Wallet detection, Quadratic Credit budget tracker, candidate application cards with dynamic vote steppers, and the live blockchain event log terminal:
+Below is a live structural preview of the glassmorphic interface featuring real-time Freighter Wallet detection, Quadratic Credit budget tracking, candidate voting cards, and the live transaction terminal:
 
-```text
-+-------------------------------------------------------------------------------------------------------+
-|  🎓 SCHOLARSHIP DAO   [Voter Mode | Admin Mode]           💳 0x7F...3a91 (10,000 XLM) [Freighter]   |
-+-------------------------------------------------------------------------------------------------------+
-|                                                                                                       |
-|  [⚡ Quadratic Voting Active]   Your Credit Budget: 🟢 91 / 100 Credits Remaining                        |
-|                                                                                                       |
-|  +-----------------------------------+  +-----------------------------------+  +--------------------+ |
-|  | 👩‍🎓 Sophia Chen                   |  | 👨‍🎓 Marcus Vance                  |  | 👩‍💻 Elena Rostova   | |
-|  | Major: Computer Science           |  | Major: AI & Robotics              |  | Major: BioTech     | |
-|  | Target Grant: 2,500 XLM           |  | Target Grant: 3,500 XLM           |  | Target Grant: 1,800| |
-|  | "Building ZK-rollups on Soroban"  |  | "Autonomous Medical Drones"       |  | "Gene Sequencing"  | |
-|  |                                   |  |                                   |  |                    | |
-|  | Votes Received: 📊 16 (4^2 = 16)  |  | Votes Received: 📊 9 (3^2 = 9)    |  | Votes: 📊 25 (5^2) | |
-|  |                                   |  |                                   |  |                    | |
-|  | Intensity: [ - ]  3 Votes  [ + ]  |  | Intensity: [ - ]  1 Vote  [ + ]   |  | Intensity: [ - ] 0 | |
-|  | Deduct Cost: 9 Credits            |  | Deduct Cost: 1 Credit             |  | Deduct Cost: 0     | |
-|  |                                   |  |                                   |  |                    | |
-|  | [ 🗳️ CAST QUADRATIC VOTE ]        |  | [ 🗳️ CAST QUADRATIC VOTE ]        |  | [ 🗳️ VOTE CAST ]   | |
-|  +-----------------------------------+  +-----------------------------------+  +--------------------+ |
-|                                                                                                       |
-|  +-------------------------------------------------------------------------------------------------+  |
-|  | 💻 REAL-TIME ON-CHAIN LOG TERMINAL                                                              |  |
-|  | [13:31:05] 🚀 Freighter Wallet connected: GC9L...8TY                                            |  |
-|  | [13:31:12] ⚡ Soroban Contract Invoked: vote_quadratic(candidate_id: 1, votes: 3)                 |  |
-|  | [13:31:15] ✅ Transaction Confirmed! TxHash: f4dec41192442c545dfc4fb13366552a5e3180e521...      |  |
-|  +-------------------------------------------------------------------------------------------------+  |
-+-------------------------------------------------------------------------------------------------------+
+> 💳 **Active Wallet:** `0x7F...3a91` (10,000 XLM) &nbsp;|&nbsp; 🟢 **Voter Mode Active** &nbsp;|&nbsp; ⚡ **Credit Budget:** `91 / 100 Credits Remaining`
+
+| 👩‍🎓 Candidate Profile | 📚 Major & Proposal Essay | 💰 Grant Target | 📊 Votes Received | ⚡ Vote Intensity & Quadratic Cost | 🗳️ Action |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **Sophia Chen** | **Computer Science**<br> *"Building ZK-rollups on Soroban"* | `2,500 XLM` | `16 Votes` *(4²)* | `[ - ] 3 Votes [ + ]`<br>*(Cost: 9 Credits)* | `[ 🗳️ CAST VOTE ]` |
+| **Marcus Vance** | **AI & Robotics**<br> *"Autonomous Medical Drones"* | `3,500 XLM` | `9 Votes` *(3²)* | `[ - ] 1 Vote [ + ]`<br>*(Cost: 1 Credit)* | `[ 🗳️ CAST VOTE ]` |
+| **Elena Rostova** | **BioTech**<br> *"Gene Sequencing Platform"* | `1,800 XLM` | `25 Votes` *(5²)* | `[ - ] 0 Votes [ + ]`<br>*(Cost: 0 Credits)* | `[ ✅ VOTE CAST ]` |
+
+```bash
+💻 REAL-TIME ON-CHAIN LOG TERMINAL
+[13:31:05] 🚀 Freighter Wallet connected: GC9L...8TY
+[13:31:12] ⚡ Soroban Contract Invoked: vote_quadratic(candidate_id: 1, votes: 3)
+[13:31:15] ✅ Transaction Confirmed! TxHash: f4dec41192442c545dfc4fb13366552a5e3180e521be82bb14fcdd2dd1aa0ff9
 ```
+
 
 ### 📸 Visual Screenshots & Layouts
 
