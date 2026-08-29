@@ -37,6 +37,9 @@ import {
   type MonthlyCohortProfile, 
   type OnboardingTask 
 } from './services/onboardingService';
+import { MilestoneTracker, type Milestone } from './components/MilestoneTracker';
+import { DisputeAppealModal, type DisputeAppealItem } from './components/DisputeAppealModal';
+
 
 interface Candidate {
   id: number;
@@ -91,7 +94,35 @@ function App() {
 
   // App States
   const [isVotingOpen, setIsVotingOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState<'voting' | 'milestones' | 'appeals'>('voting');
+  const [milestonesMap, _setMilestonesMap] = useState<{ [candidateId: number]: Milestone[] }>({
+    0: [
+      { id: 0, candidateId: 0, description: "Phase 1: Computer Vision Model Prototype", percentage: 40, proofUri: "ipfs://QmXOYpizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco", completed: true, disbursed: true },
+      { id: 1, candidateId: 0, description: "Phase 2: Offline Edge Device Testing", percentage: 30, proofUri: "ipfs://QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWcPBDG", completed: true, disbursed: false },
+      { id: 2, candidateId: 0, description: "Phase 3: Rural Clinic Field Deployment", percentage: 30, proofUri: "", completed: false, disbursed: false }
+    ],
+    1: [
+      { id: 0, candidateId: 1, description: "Phase 1: Solar Desalination CAD Blueprint", percentage: 50, proofUri: "ipfs://QmZTR123ProofMetadataForDisputeAppeal", completed: true, disbursed: false },
+      { id: 1, candidateId: 1, description: "Phase 2: Agricultural Test Strip Pilot", percentage: 50, proofUri: "", completed: false, disbursed: false }
+    ]
+  });
+
+  const [appeals, _setAppeals] = useState<DisputeAppealItem[]>([
+
+    {
+      id: 0,
+      candidateId: 3,
+      appellant: "GAT22...ENV88",
+      reason: "Application rejected due to initial transcript formatting mismatch. Academic record updated.",
+      appealUri: "ipfs://QmZTR123ProofMetadataForDisputeAppeal",
+      status: "PENDING",
+      votesFor: 2,
+      votesAgainst: 0
+    }
+  ]);
+
   const [candidates, setCandidates] = useState<Candidate[]>([
+
     {
       id: 0,
       owner: "GBL43...XLM77",
@@ -825,12 +856,41 @@ function App() {
         {/* LEFT COLUMN: applicants & form */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
           
-          {/* APPLICANT LIST */}
-          <div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Award size={22} color="#8b5cf6" />
-              Scholarship Applicants
-            </h2>
+          {/* TAB NAVIGATION HEADER */}
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
+            <button
+              onClick={() => setActiveTab('voting')}
+              className={`btn ${activeTab === 'voting' ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}
+            >
+              🗳️ Voting & Candidates
+            </button>
+            <button
+              onClick={() => setActiveTab('milestones')}
+              className={`btn ${activeTab === 'milestones' ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}
+            >
+              🏆 Soroban Grant Escrow Milestones
+            </button>
+            <button
+              onClick={() => setActiveTab('appeals')}
+              className={`btn ${activeTab === 'appeals' ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}
+            >
+              ⚖️ Dispute DAO Appeals ({appeals.length})
+            </button>
+          </div>
+
+          {/* TAB 1: SCHOLARSHIP APPLICANTS & VOTING */}
+          {activeTab === 'voting' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+            <div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Award size={22} color="#8b5cf6" />
+                Scholarship Applicants
+              </h2>
+
+
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
               {candidates.map((c) => {
@@ -1060,8 +1120,56 @@ function App() {
               )}
             </form>
           </div>
+          </div>
+          )}
+
+          {/* TAB 2: SOROBAN GRANT ESCROW MILESTONES */}
+          {activeTab === 'milestones' && (
+            <div className="space-y-4 animate-slide-in">
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#67e8f9' }}>
+                🏆 Soroban Milestone Grant Escrow Protocol
+              </h2>
+              <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '1.5rem' }}>
+                Grant funding is locked in Soroban smart contract escrow and released incrementally upon milestone proof IPFS verification.
+              </p>
+
+              {candidates.filter(c => c.approved).map(c => (
+                <MilestoneTracker
+                  key={c.id}
+                  candidateId={c.id}
+                  candidateName={c.name}
+                  totalGrantAmount={c.requestedAmount}
+                  contractId={contractId}
+                  userAddress={walletAddress || ""}
+                  isAdmin={isAdminSimulated}
+                  milestones={milestonesMap[c.id] || []}
+                  onMilestoneUpdated={() => {
+                    addEvent('info', `Milestone status refreshed for ${c.name}.`);
+                  }}
+                  onLogEvent={(msg) => addEvent('info', msg)}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* TAB 3: DISPUTE DAO APPEALS */}
+          {activeTab === 'appeals' && (
+            <div className="animate-slide-in">
+              <DisputeAppealModal
+                candidates={candidates.map(c => ({ id: c.id, name: c.name, approved: c.approved }))}
+                appeals={appeals}
+                contractId={contractId}
+                userAddress={walletAddress || ""}
+                onAppealUpdated={() => {
+                  addEvent('info', "Dispute appeal state updated on Soroban DAO.");
+                }}
+                onLogEvent={(msg) => addEvent('info', msg)}
+              />
+            </div>
+          )}
 
         </div>
+
 
         {/* RIGHT COLUMN: Sidebar (Wallet, Admin, Events) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>

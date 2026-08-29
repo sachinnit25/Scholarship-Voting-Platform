@@ -220,4 +220,92 @@ export const endVoting = async (contractId: string) => {
   return await invokeContract(contractId, "end_voting", []);
 };
 
+/**
+ * Adds a grant milestone for a candidate.
+ */
+export const addGrantMilestone = async (
+  contractId: string,
+  candidateId: number,
+  description: string,
+  percentage: number
+) => {
+  const args = [
+    StellarSdk.nativeToScVal(candidateId, { type: "u32" }),
+    StellarSdk.nativeToScVal(description, { type: "string" }),
+    StellarSdk.nativeToScVal(percentage, { type: "u32" }),
+  ];
+  return await invokeContract(contractId, "add_grant_milestone", args);
+};
+
+/**
+ * Submits IPFS milestone completion proof.
+ */
+export const submitMilestoneProof = async (
+  contractId: string,
+  studentAddress: string,
+  candidateId: number,
+  milestoneId: number,
+  proofUri: string
+) => {
+  const args = [
+    StellarSdk.Address.fromString(studentAddress).toScVal(),
+    StellarSdk.nativeToScVal(candidateId, { type: "u32" }),
+    StellarSdk.nativeToScVal(milestoneId, { type: "u32" }),
+    StellarSdk.nativeToScVal(proofUri, { type: "string" }),
+  ];
+  return await invokeContract(contractId, "submit_milestone_proof", args);
+};
+
+/**
+ * Approves and disburses milestone funds (Admin only).
+ */
+export const approveAndDisburseMilestone = async (
+  contractId: string,
+  candidateId: number,
+  milestoneId: number
+) => {
+  const args = [
+    StellarSdk.nativeToScVal(candidateId, { type: "u32" }),
+    StellarSdk.nativeToScVal(milestoneId, { type: "u32" }),
+  ];
+  return await invokeContract(contractId, "approve_and_disburse_milestone", args);
+};
+
+/**
+ * Submits a dispute appeal for an application.
+ */
+export const submitDisputeAppeal = async (
+  contractId: string,
+  appellantAddress: string,
+  candidateId: number,
+  reason: string,
+  appealUri: string
+) => {
+  const args = [
+    StellarSdk.Address.fromString(appellantAddress).toScVal(),
+    StellarSdk.nativeToScVal(candidateId, { type: "u32" }),
+    StellarSdk.nativeToScVal(reason, { type: "string" }),
+    StellarSdk.nativeToScVal(appealUri, { type: "string" }),
+  ];
+  return await invokeContract(contractId, "submit_dispute_appeal", args);
+};
+
+/**
+ * Votes on a dispute appeal in the DAO.
+ */
+export const voteOnAppeal = async (
+  contractId: string,
+  voterAddress: string,
+  appealId: number,
+  approve: boolean
+) => {
+  const args = [
+    StellarSdk.Address.fromString(voterAddress).toScVal(),
+    StellarSdk.nativeToScVal(appealId, { type: "u32" }),
+    StellarSdk.nativeToScVal(approve, { type: "bool" }),
+  ];
+  return await invokeContract(contractId, "vote_on_appeal", args);
+};
+
 export { server };
+
