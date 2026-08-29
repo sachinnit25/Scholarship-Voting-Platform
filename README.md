@@ -75,37 +75,30 @@ This flowchart details how user wallet interactions travel from the React client
 
 ```mermaid
 flowchart TD
-    %% Styling
-    classDef client fill:#1e1e38,stroke:#61dafb,stroke-width:2px,color:#fff
-    classDef wallet fill:#2a1b4e,stroke:#8b5cf6,stroke-width:2px,color:#fff
-    classDef rpc fill:#1b382b,stroke:#10b981,stroke-width:2px,color:#fff
-    classDef contract fill:#3b1e2b,stroke:#ec4899,stroke-width:2px,color:#fff
-    classDef ledger fill:#362e1e,stroke:#f59e0b,stroke-width:2px,color:#fff
-
-    subgraph ClientLayer["💻 Client Interface Layer (React 19 + TypeScript)"]
-        UI["App Dashboard Layout"] ::: client
-        QVCalc["Quadratic Credit Calculator Math"] ::: client
-        Fallback["Fee Sponsorship / Gasless RPC Fallback"] ::: client
+    subgraph ClientLayer["Client Interface Layer (React 19 + TypeScript)"]
+        UI["App Dashboard Layout"]
+        QVCalc["Quadratic Credit Calculator Math"]
+        Fallback["Fee Sponsorship / Gasless RPC Fallback"]
     end
 
-    subgraph WalletLayer["🔐 Security & Wallet Signer"]
-        Freighter["Freighter Browser Wallet Extension"] ::: wallet
+    subgraph WalletLayer["Security & Wallet Signer"]
+        Freighter["Freighter Browser Wallet Extension"]
     end
 
-    subgraph RPCLayer["📡 Network Communication Layer"]
-        Horizon["Stellar Horizon RPC Server"] ::: rpc
-        SimFallback["Tx Simulation Fallback Engine"] ::: rpc
+    subgraph RPCLayer["Network Communication Layer"]
+        Horizon["Stellar Horizon RPC Server"]
+        SimFallback["Tx Simulation Fallback Engine"]
     end
 
-    subgraph SorobanLayer["🦀 Soroban Smart Contract Runtime (Rust)"]
-        LibRS["scholarship-contract / src/lib.rs"] ::: contract
-        VoteFunc["vote_quadratic(voter, candidate_id, votes)"] ::: contract
-        RegFunc["register_candidate(name, essay, amount)"] ::: contract
-        StateStorage["Persistent State Storage (Trie)"] ::: contract
+    subgraph SorobanLayer["Soroban Smart Contract Runtime (Rust)"]
+        LibRS["scholarship-contract / src/lib.rs"]
+        VoteFunc["vote_quadratic(voter, candidate_id, votes)"]
+        RegFunc["register_candidate(name, essay, amount)"]
+        StateStorage["Persistent State Storage (Trie)"]
     end
 
-    subgraph StellarChain["🌐 Stellar Blockchain Consensus"]
-        Ledger["Stellar Mainnet Ledger Consensus"] ::: ledger
+    subgraph StellarChain["Stellar Blockchain Consensus"]
+        Ledger["Stellar Mainnet Ledger Consensus"]
     end
 
     UI -->|"1. User Selects Vote Intensity"| QVCalc
@@ -128,21 +121,15 @@ This flowchart illustrates the step-by-step grant lifecycle from candidate submi
 
 ```mermaid
 flowchart LR
-    %% Styling
-    classDef step1 fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
-    classDef step2 fill:#311b92,stroke:#7c4dff,stroke-width:2px,color:#fff
-    classDef step3 fill:#004d40,stroke:#00bfa5,stroke-width:2px,color:#fff
-    classDef step4 fill:#4a148c,stroke:#ea80fc,stroke-width:2px,color:#fff
-    classDef step5 fill:#bf360c,stroke:#ff6e40,stroke-width:2px,color:#fff
-
-    A["1️⃣ Student Submission\n(On-chain Application)"] ::: step1 --> B{"2️⃣ Admin Verification\n(Approval Check)"} ::: step2
-    B -->|"Approved"| C["3️⃣ Public Voting Period\n(Quadratically Budgeted)"] ::: step3
-    B -->|"Rejected"| F["❌ Candidacy Closed"]
+    A["1. Student Application (On-chain Registration)"] --> B{"2. Admin Verification"}
+    B -->|"Approved"| C["3. Community Voting Period (Quadratically Budgeted)"]
+    B -->|"Rejected"| F["Candidacy Rejected"]
     
-    C --> D["4️⃣ Quadratic Cost Deduction\n(Cost = N² Credits)"] ::: step4
-    D --> E["5️⃣ Final Leaderboard Calculation\n(Democratized Vote Weight)"] ::: step5
-    E --> G["🏆 XLM Scholarship Disbursement"] ::: step3
+    C --> D["4. Quadratic Cost Deduction (Cost = N^2 Credits)"]
+    D --> E["5. Democratized Leaderboard Calculation"]
+    E --> G["XLM Scholarship Disbursement"]
 ```
+
 
 ---
 
