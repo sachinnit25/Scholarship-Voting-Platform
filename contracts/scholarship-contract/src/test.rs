@@ -319,3 +319,93 @@ fn test_quadratic_voting_insufficient_credits_panic() {
     // 11 votes costs 11^2 = 121 > 100 available credits
     client.vote_quadratic(&voter, &candidate_id, &11);
 }
+
+#[test]
+fn test_grant_milestone_lifecycle() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register_contract(None, DecentralizedScholarshipVoting);
+    let client = DecentralizedScholarshipVotingClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+    client.initialize(&admin);
+
+    let student = Address::generate(&env);
+    let candidate_id = client.apply_scholarship(
+        &student,
+        &String::from_str(&env, "Carol"),
+        &String::from_str(&env, "Robotics"),
+        &String::from_str(&env, "Autonomous Drones"),
+        &10000,
+    );
+
+    // Add milestones (30%, 40%, 30%)
+    let m1 = client.add_grant_milestone(&candidate_id, &String::from_str(&env, "Prototype"), &30);
+    let m2 = client.add_grant_milestone(&candidate_id, &String::from_str(&env, "Field Test"), &40);
+
+    let milestones = client.get_candidate_milestones(&candidate_id);
+    assert_eq!(milestones.len(), 2);
+    assert_eq!(milestones.get(0).unwrap().percentage, 30);
+    assert!(!milestones.get(0).unwrap().completed);
+
+    // Submit proof
+    let proof_link = String::from_str(&env, "ipfs://QmXOYpizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco");
+    client.submit_milestone_proof(&student, &candidate_id, &m1, &proof_link);
+
+    let updated_m1 = client.get_candidate_milestones(&candidate_id).get(0).unwrap();
+    assert!(updated_m1.completed);
+    assert_eq!(updated_m1.proof_uri, proof_link);
+
+    // Approve & Disburse
+    client.approve_and_disburse_milestone(&candidate_id, &m1);
+    let final_m1 = client.get_candidate_milestones(&candidate_id).get(0).unwrap();
+    assert!(final_m1.disbursed);
+}
+
+#[test]
+fn test_dispute_appeal_dao_voting() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register_contract(None, DecentralizedScholarshipVoting);
+    let client = DecentralizedScholarshipVotingClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+    client.initialize(&admin);
+
+    let student = Address::generate(&env);
+    let candidate_id = client.apply_scholarship(
+        &student,
+        &String::from_str(&env, "Dave"),
+        &String::from_str(&env, "AI Ethics"),
+        &String::from_str(&env, "Algorithmic Fairness"),
+        &6000,
+    );
+
+    // Submit dispute appeal for candidate
+    let appeal_id = client.submit_dispute_appeal(
+        &student,
+        &candidate_id,
+        &String::from_str(&env, "Application rejected unfairly"),
+        &String::from_str(&env, "ipfs://QmAppealProof123"),
+    );
+
+    let appeals = client.get_dispute_appeals();
+    assert_eq!(appeals.len(), 1);
+    assert_eq!(appeals.get(0).unwrap().status, String::from_str(&env, "PENDING"));
+
+    // Community votes
+    let v1 = Address::generate(&env);
+    let v2 = Address::generate(&env);
+    let v3 = Address::generate(&env);
+
+    client.vote_on_appeal(&v1, &appeal_id, &true);
+    client.vote_on_appeal(&v2, &appeal_id, &true);
+    client.vote_on_appeal(&v3, &appeal_id, &true);
+
+    let final_appeals = client.get_dispute_appeals();
+    assert_eq!(final_appeals.get(0).unwrap().status, String::from_str(&env, "APPROVED"));
+    // Candidate should now be approved automatically
+    assert!(client.get_candidate(&candidate_id).approved);
+}

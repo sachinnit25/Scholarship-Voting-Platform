@@ -13,6 +13,8 @@ const VOTING_ACTIVE: Symbol = symbol_short!("ACTIVE");
 const USER_PROFILES: Symbol = symbol_short!("PROFILES");
 const CREDITS: Symbol = symbol_short!("CREDITS");
 const QV_VOTES: Symbol = symbol_short!("QVVOTES");
+const MILESTONES: Symbol = symbol_short!("MILESTN");
+const APPEALS: Symbol = symbol_short!("APPEALS");
 
 const DEFAULT_VOTER_CREDITS: u32 = 100;
 
@@ -38,6 +40,31 @@ pub struct Candidate {
     pub vote_count: u32,
     pub approved: bool,
     pub effective_qv_score: u32,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct GrantMilestone {
+    pub id: u32,
+    pub candidate_id: u32,
+    pub description: String,
+    pub percentage: u32,
+    pub proof_uri: String,
+    pub completed: bool,
+    pub disbursed: bool,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DisputeAppeal {
+    pub id: u32,
+    pub candidate_id: u32,
+    pub appellant: Address,
+    pub reason: String,
+    pub appeal_uri: String,
+    pub status: String, // "PENDING", "APPROVED", "REJECTED"
+    pub votes_for: u32,
+    pub votes_against: u32,
 }
 
 #[contract]
@@ -227,6 +254,167 @@ impl DecentralizedScholarshipVoting {
         } else {
             0
         }
+    }
+
+    // --- Milestone Escrow Module ---
+
+    // Add grant milestone for candidate (admin or student owner)
+    pub fn add_grant_milestone(
+        env: Env,
+        candidate_id: u32,
+        description: String,
+        percentage: u32,
+    ) -> u32 {
+        let mut milestone_map: Map<u32, Vec<GrantMilestone>> =
+            env.storage().instance().get(&MILESTONES).unwrap_or(Map::new(&env));
+
+        let mut milestones = milestone_map.get(candidate_id).unwrap_or(Vec::new(&env));
+        let milestone_id = milestones.len();
+
+        milestones.push_back(GrantMilestone {
+            id: milestone_id,
+            candidate_id,
+            description,
+            percentage,
+            proof_uri: String::from_str(&env, ""),
+            completed: false,
+            disbursed: false,
+        });
+
+        milestone_map.set(candidate_id, milestones);
+        env.storage().instance().set(&MILESTONES, &milestone_map);
+        milestone_id
+    }
+
+    // Submit milestone completion proof (student)
+    pub fn submit_milestone_proof(
+        env: Env,
+        student: Address,
+        candidate_id: u32,
+        milestone_id: u32,
+        proof_uri: String,
+    ) {
+        student.require_auth();
+
+        let mut milestone_map: Map<u32, Vec<GrantMilestone>> =
+            env.storage().instance().get(&MILESTONES).expect("No milestones configured");
+        let mut milestones = milestone_map.get(candidate_id).expect("Candidate milestones not found");
+
+        if milestone_id >= milestones.len() {
+            panic!("Invalid milestone ID");
+        }
+
+        let mut milestone = milestones.get(milestone_id).unwrap();
+        milestone.proof_uri = proof_uri;
+        milestone.completed = true;
+
+        milestones.set(milestone_id, milestone);
+        milestone_map.set(candidate_id, milestones);
+        env.storage().instance().set(&MILESTONES, &milestone_map);
+    }
+
+    // Approve & Disburse milestone funds (admin only)
+    pub fn approve_and_disburse_milestone(env: Env, candidate_id: u32, milestone_id: u32) {
+        let admin: Address = env.storage().instance().get(&ADMIN).expect("Not initialized");
+        admin.require_auth();
+
+        let mut milestone_map: Map<u32, Vec<GrantMilestone>> =
+            env.storage().instance().get(&MILESTONES).expect("No milestones configured");
+        let mut milestones = milestone_map.get(candidate_id).expect("Candidate milestones not found");
+
+        if milestone_id >= milestones.len() {
+            panic!("Invalid milestone ID");
+        }
+
+        let mut milestone = milestones.get(milestone_id).unwrap();
+        if !milestone.completed {
+            panic!("Milestone proof not submitted yet");
+        }
+
+        milestone.disbursed = true;
+        milestones.set(milestone_id, milestone);
+        milestone_map.set(candidate_id, milestones);
+        env.storage().instance().set(&MILESTONES, &milestone_map);
+    }
+
+    pub fn get_candidate_milestones(env: Env, candidate_id: u32) -> Vec<GrantMilestone> {
+        let milestone_map: Map<u32, Vec<GrantMilestone>> =
+            env.storage().instance().get(&MILESTONES).unwrap_or(Map::new(&env));
+        milestone_map.get(candidate_id).unwrap_or(Vec::new(&env))
+    }
+
+    // --- Dispute Appeal DAO Module ---
+
+    // Submit dispute appeal for rejected or flagged applications
+    pub fn submit_dispute_appeal(
+        env: Env,
+        appellant: Address,
+        candidate_id: u32,
+        reason: String,
+        appeal_uri: String,
+    ) -> u32 {
+        appellant.require_auth();
+
+        let mut appeals: Vec<DisputeAppeal> =
+            env.storage().instance().get(&APPEALS).unwrap_or(Vec::new(&env));
+
+        let appeal_id = appeals.len();
+
+        appeals.push_back(DisputeAppeal {
+            id: appeal_id,
+            candidate_id,
+            appellant,
+            reason,
+            appeal_uri,
+            status: String::from_str(&env, "PENDING"),
+            votes_for: 0,
+            votes_against: 0,
+        });
+
+        env.storage().instance().set(&APPEALS, &appeals);
+        appeal_id
+    }
+
+    // Vote on a dispute appeal
+    pub fn vote_on_appeal(env: Env, voter: Address, appeal_id: u32, approve: bool) {
+        voter.require_auth();
+
+        let mut appeals: Vec<DisputeAppeal> =
+            env.storage().instance().get(&APPEALS).expect("No appeals found");
+
+        if appeal_id >= appeals.len() {
+            panic!("Invalid appeal ID");
+        }
+
+        let mut appeal = appeals.get(appeal_id).unwrap();
+
+        if approve {
+            appeal.votes_for += 1;
+        } else {
+            appeal.votes_against += 1;
+        }
+
+        // Auto-approve appeal if votes_for >= 3 threshold
+        if appeal.votes_for >= 3 {
+            appeal.status = String::from_str(&env, "APPROVED");
+            
+            // Auto-approve the associated candidate
+            let mut candidates: Vec<Candidate> =
+                env.storage().instance().get(&CANDIDATES).expect("No candidates found");
+            if appeal.candidate_id < candidates.len() {
+                let mut candidate = candidates.get(appeal.candidate_id).unwrap();
+                candidate.approved = true;
+                candidates.set(appeal.candidate_id, candidate);
+                env.storage().instance().set(&CANDIDATES, &candidates);
+            }
+        }
+
+        appeals.set(appeal_id, appeal);
+        env.storage().instance().set(&APPEALS, &appeals);
+    }
+
+    pub fn get_dispute_appeals(env: Env) -> Vec<DisputeAppeal> {
+        env.storage().instance().get(&APPEALS).unwrap_or(Vec::new(&env))
     }
 
     // Close voting (admin only)
